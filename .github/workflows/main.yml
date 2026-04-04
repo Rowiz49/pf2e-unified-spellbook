@@ -49,7 +49,7 @@ jobs:
           tag: ${{ github.event.release.tag_name }}
           body: ${{ github.event.release.body }}
       - name: Publish to Foundry VTT packages
-        uses: fjogeleit/http-request-action@c0b95d02a088b47c1f2f4db04fd8af8bd19eee54
+        uses: fjogeleit/http-request-action@551353b829c3646756b2ec2b3694f819d7957495
         with:
           timeout: 60000
           url: "https://api.foundryvtt.com/_api/packages/release_version/"
