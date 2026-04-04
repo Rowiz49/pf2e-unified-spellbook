@@ -1,0 +1,36 @@
+{
+  "id": "pf2e-unified-spellbook",
+  "title": "PF2e Unified Spellbook",
+  "description": "A module that unifies all your spells in a single tab",
+  "version": "1.0.0",
+  "library": "false",
+  "compatibility": {
+    "minimum": 13,
+    "verified": 13
+  },
+  "authors": [
+    {
+      "name": "Rowiz49",
+      "url": "https://github.com/Rowiz49"
+    }
+  ],
+  "relationships": {
+    "systems": [
+      {
+        "id": "pf2e",
+        "type": "system",
+        "compatibility": {
+          "minimum": "7.8.0",
+          "verified": "7.8.0"
+        }
+      }
+    ]
+  },
+  "esmodules": ["scripts/main.js"],
+  "flags": {},
+  "url": "",
+  "manifest": "",
+  "download": "",
+  "license": "LICENSE",
+  "readme": "README.md"
+}
