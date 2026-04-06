@@ -202,6 +202,12 @@ function getSpellsByRank(spells, entry) {
  * @returns {SlotInfo} The slot state object for the template.
  */
 function getSlotInfo(isRegularEntry, rankKey, entry, rankSpells, actor) {
+  const isStaff = !!entry.staff;
+
+  if (isStaff) {
+    return getStaffData(actor, entry);
+  }
+
   if (!isRegularEntry) return { type: "equipment" };
 
   const slotNum = rankKey === "cantrips" ? 0 : Number.parseInt(rankKey);
@@ -249,6 +255,44 @@ function getSlotInfo(isRegularEntry, rankKey, entry, rankSpells, actor) {
 }
 
 /**
+ * Builds staff entry data from pf2e dailies
+ * @param {Actor} actor
+ * @param {Item} entry
+ * @returns The staff type and it's corresponding charges
+ */
+function getStaffData(actor, entry) {
+  const rawStaves = actor.flags?.["pf2e-dailies"]?.extra?.dailies?.staves;
+  console.log(rawStaves);
+
+  const stavesArray = Array.isArray(rawStaves)
+    ? rawStaves
+    : rawStaves
+      ? [rawStaves]
+      : [];
+  console.log(stavesArray);
+  const staffId =
+    entry.staff?._id ?? entry.staff?.id ?? entry.id?.replace(/-casting$/, "");
+  console.log(staffId);
+
+  const staffData = stavesArray.find((s) => s.staffId === staffId);
+  console.log(staffData);
+  if (staffData) {
+    const charges = staffData.charges ?? { value: 0, max: 0 };
+    return {
+      type: "staff",
+      current: charges.value,
+      max: charges.max,
+    };
+  } else {
+    return {
+      type: "staff",
+      current: 0,
+      max: 0,
+    };
+  }
+}
+
+/**
  * Builds the list of {@link SpellViewModel} objects for a single source entry
  * at a given rank.
  *
@@ -276,7 +320,7 @@ function buildSpellViewModels(slotInfo, rankSpells, entryKey, rankKey, actor) {
     slotInfo.type === "equipment" ? getParentItem(actor, entryKey) : null;
 
   const isDrawn = parentItem?.system?.equipped?.carryType === "held";
-  console.log(slotInfo);
+
   const hasUses = slotInfo.type === "innate";
 
   /** @param {Item} spell @param {number|null} slotId @param {boolean} expended */
@@ -290,7 +334,10 @@ function buildSpellViewModels(slotInfo, rankSpells, entryKey, rankKey, actor) {
     groupId: rankKey,
     slotId,
     expended,
-    actions: spell.system.time?.value ?? "",
+    actions:
+      (spell.system.time?.value === "reaction"
+        ? "R"
+        : spell.system.time?.value) ?? "",
     defense: getDefense(spell),
     range: spell.system.range?.value ?? "",
     isDrawn,
@@ -316,7 +363,8 @@ function buildSpellViewModels(slotInfo, rankSpells, entryKey, rankKey, actor) {
   let expended =
     rankKey !== "cantrips" &&
     ((slotInfo.type === "spontaneous" && slotInfo.current === 0) ||
-      (slotInfo.type === "focus" && slotInfo.current === 0));
+      (slotInfo.type === "focus" && slotInfo.current === 0) ||
+      (slotInfo.type === "staff" && slotInfo.current === 0));
 
   if (slotInfo.type === "equipment") {
     expended = parentItem?.system?.uses?.value === 0;
