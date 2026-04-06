@@ -1,0 +1,132 @@
+<ol class="spellcastingEntry-list directory-list unified-spell-list" style="display:none; margin-bottom:8px;">
+  {{#each ranks}}
+  <li class="item item-container spellcasting-entry">
+    <div class="action-header">
+      <h3 class="item-name">
+        <span style="padding: 0 8px;">{{rankLabel}}</span>
+      </h3>
+    </div>
+
+    <ol class="spell-list">
+      {{#each sources}}
+
+      {{!-- Origin sub-header: omitted entirely for cantrips --}}
+      {{#if ../isCantrip}}
+        <li class="header-row" style="
+        {{#if @first}}margin-top: 6px;{{/if}}
+        background: rgba(0,0,0,0.04);
+        border-top: 1px solid var(--color-border-light-tertiary, #ccc);
+        border-bottom: 1px solid var(--color-border-light-tertiary, #ccc);
+      ">
+        <div class="item-name" style="gap: 6px; font-style: italic;">
+          <h3 style="font-size: 0.82em; opacity: 0.75; margin: 0;">{{entryName}}</h3>
+        </div>
+        <div class="defense">Defense</div>
+        <div class="range">Range</div>
+        <button type="button" class="cast-spell blue invisible">Cast</button>
+        <div class="item-controls"></div>
+      </li>
+      {{else}}
+      <li class="header-row" style="
+        {{#if @first}}margin-top: 6px;{{/if}}
+        background: rgba(0,0,0,0.04);
+        border-top: 1px solid var(--color-border-light-tertiary, #ccc);
+        border-bottom: 1px solid var(--color-border-light-tertiary, #ccc);
+      ">
+        <div class="item-name" style="gap: 6px; font-style: italic;">
+          <h3 style="font-size: 0.82em; opacity: 0.75; margin: 0;">{{entryName}}</h3>
+
+          {{#if (unifiedEq slotInfo.type "spontaneous")}}
+            <span class="flex0">{{slotInfo.current}} / {{slotInfo.max}} </span>
+          {{/if}}
+
+
+          {{#if (unifiedEq slotInfo.type "focus")}}
+            <section class="focus-pool" data-action="adjust-resource" data-resource="focus">
+              <span class="pips">
+                {{#each slotInfo.slots}}
+                  <i class="{{#if expended}}fa-regular fa-circle{{else}}fa-solid fa-circle-dot{{/if}} "></i>
+                {{/each}}
+              </span>
+            </section>
+          {{/if}}
+
+          {{#if (unifiedEq slotInfo.type "equipment")}}
+            <span style="font-size:0.78em; opacity:0.65;">Item</span>
+          {{/if}}
+        </div>
+        <div class="defense">Defense</div>
+        {{#if (unifiedEq slotInfo.type "innate")}}
+            <div class="range">Uses</div>
+
+        {{else}}
+            <div class="range">Range</div>
+        {{/if}}       
+        <button type="button" class="cast-spell blue invisible">Cast</button>
+        <div class="item-controls"></div>
+      </li>
+      {{/if}}
+
+      {{!-- Spells for this origin at this rank.
+           Prepared entries emit one <li> per slot (duplicates allowed).
+           Expended spells receive data-slot-expended so PF2e CSS greys them. --}}
+      {{#each spells}}
+      <li class="spell"
+        data-item-type="spell"
+        data-item-id="{{_id}}"
+        data-entry-id="{{entryId}}"
+        data-cast-rank="{{castRank}}"
+        data-group-id="{{groupId}}"
+        {{#if slotId}}data-slot-id="{{slotId}}"{{/if}}
+        {{#if expended}}data-slot-expended=""{{/if}}
+      >
+        <div class="item-name drag-handle" data-drag-handle="">
+          <a class="item-image framed" data-action="item-to-chat">
+            <img class="item-icon" src="{{img}}">
+            <i class="fa-solid fa-message"></i>
+          </a>
+          <h4 class="name">
+            <a data-action="toggle-summary">{{name}}</a>
+            <span class="action-glyph">{{actions}}</span>
+          </h4>
+        </div>
+        <div class="defense">{{defense}}</div>
+        {{log groupId}}
+        {{#if hasUses}}
+            <div class="range">{{#if (unifiedEq groupId "cantrips")}} {{range}} {{else}} {{uses.value}} / {{uses.max}} {{/if}}</div>
+        {{else}}
+            <div class="range">{{range}}</div>
+        {{/if}}        
+        {{#if isItem}}
+            {{#if isDrawn}}
+                <button type="button" class="cast-spell blue" data-action="cast-spell">
+                Cast
+                </button>
+            {{else}}
+                <button
+                type="button"
+                class="cast-spell blue"
+                data-action="draw-item"
+                data-item-id="{{itemId}}"
+                >
+                Draw
+                </button>
+            {{/if}}
+        {{else}}
+            <button type="button" class="cast-spell blue" data-action="cast-spell">
+                Cast
+            </button>
+        {{/if}}        
+        <div class="item-controls">
+          <a data-action="edit-item" data-tooltip="PF2E.EditItemTitle"><i class="fa-solid fa-fw fa-edit"></i></a>
+          <a data-action="delete-item" data-tooltip="PF2E.DeleteItemTitle"><i class="fa-solid fa-fw fa-trash"></i></a>
+        </div>
+        <div class="item-summary" hidden=""></div>
+      </li>
+      {{/each}}
+
+      {{/each}}
+    </ol>
+  </li>
+  {{/each}}
+</ol>
