@@ -21,10 +21,10 @@
         <div class="item-name" style="gap: 6px; font-style: italic;">
           <h3 style="font-size: 0.82em; opacity: 0.75; margin: 0;">{{entryName}}</h3>
         </div>
-        <div class="defense">Defense</div>
-        <div class="range">Range</div>
+        <div class="defense">{{localize "pf2e-unified-spellbook.Defense"}}</div>
+        <div class="range">{{localize "pf2e-unified-spellbook.Range"}}</div>
         <button type="button" class="cast-spell blue invisible">Cast</button>
-        <div class="item-controls"></div>
+        <div class="item-controls invisible"></div>
       </li>
       {{else}}
       <li class="header-row" style="
@@ -52,22 +52,22 @@
           {{/if}}
 
           {{#if (unifiedEq slotInfo.type "equipment")}}
-            <span style="font-size:0.78em; opacity:0.65;">Item</span>
+            <span style="font-size:0.78em; opacity:0.65;">{{localize "pf2e-unified-spellbook.Item"}}</span>
           {{/if}}
 
           {{#if (unifiedEq slotInfo.type "staff")}}
             <span class="flex0">{{slotInfo.current}} / {{slotInfo.max}}</span>
           {{/if}}
         </div>
-        <div class="defense">Defense</div>
+        <div class="defense">{{localize "pf2e-unified-spellbook.Defense"}}</div>
         {{#if (unifiedEq slotInfo.type "innate")}}
-            <div class="range">Uses</div>
+            <div class="range">{{localize "pf2e-unified-spellbook.Uses"}}</div>
 
         {{else}}
-            <div class="range">Range</div>
+            <div class="range">{{localize "pf2e-unified-spellbook.Range"}}</div>
         {{/if}}       
         <button type="button" class="cast-spell blue invisible">Cast</button>
-        <div class="item-controls"></div>
+        <div class="item-controls invisible"></div>
       </li>
       {{/if}}
 
@@ -112,12 +112,12 @@
                 data-action="draw-item"
                 data-item-id="{{itemId}}"
                 >
-                Draw
+                {{localize "pf2e-unified-spellbook.Draw"}}
                 </button>
             {{/if}}
         {{else}}
             <button type="button" class="cast-spell blue" data-action="cast-spell">
-                Cast
+                {{localize "pf2e-unified-spellbook.Cast"}}
             </button>
         {{/if}}        
         <div class="item-controls">
