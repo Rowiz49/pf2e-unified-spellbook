@@ -1,3 +1,8 @@
+# 1.2.0
+
+- Added language support
+- Added support for Spanish and French
+
 # 1.1.0
 
 - Added support for PF2e Dailies staves
