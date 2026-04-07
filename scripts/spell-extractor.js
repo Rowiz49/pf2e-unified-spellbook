@@ -262,20 +262,16 @@ function getSlotInfo(isRegularEntry, rankKey, entry, rankSpells, actor) {
  */
 function getStaffData(actor, entry) {
   const rawStaves = actor.flags?.["pf2e-dailies"]?.extra?.dailies?.staves;
-  console.log(rawStaves);
 
   const stavesArray = Array.isArray(rawStaves)
     ? rawStaves
     : rawStaves
       ? [rawStaves]
       : [];
-  console.log(stavesArray);
   const staffId =
     entry.staff?._id ?? entry.staff?.id ?? entry.id?.replace(/-casting$/, "");
-  console.log(staffId);
 
   const staffData = stavesArray.find((s) => s.staffId === staffId);
-  console.log(staffData);
   if (staffData) {
     const charges = staffData.charges ?? { value: 0, max: 0 };
     return {

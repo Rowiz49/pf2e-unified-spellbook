@@ -75,11 +75,11 @@ async function onRenderCreatureSheet(sheet, html) {
       if (rankKey === "focus") {
         const focusSource = sources.find((s) => s.slotInfo?.type === "focus");
         focusSlots = focusSource?.slotInfo?.slots ?? [];
-        rankLabel = "Focus Spells";
+        rankLabel = game.i18n.localize("pf2e-unified-spellbook.FocusSpells");
       } else if (rankKey === "cantrips") {
-        rankLabel = "Cantrips";
+        rankLabel = game.i18n.localize("pf2e-unified-spellbook.Cantrips");
       } else {
-        rankLabel = `${getOrdinalLabel(Number.parseInt(rankKey))} Rank`;
+        rankLabel = `${getOrdinalLabel(Number.parseInt(rankKey))} ${game.i18n.localize("pf2e-unified-spellbook.Rank")}`;
       }
 
       return {
