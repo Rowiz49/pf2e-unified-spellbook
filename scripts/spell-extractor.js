@@ -1,5 +1,5 @@
-import { getActionGlyph, capitalize, getOrdinalLabel } from "./utils.js";
-
+import { getActionGlyph, getDefense, getParentItem } from "./utils.js";
+import { injectSignatureVirtuals } from "./signature-spells.js";
 // ---------------------------------------------------------------------------
 // Spell data extraction
 // ---------------------------------------------------------------------------
@@ -80,34 +80,6 @@ import { getActionGlyph, capitalize, getOrdinalLabel } from "./utils.js";
  *   Prepared entries emit one entry per slot, so the same spell may appear multiple times.
  */
 
-/**
- * Derives the defense string for a spell.
- *
- * Returns `"AC"` for attack spells with no save, the save's statistic name
- * (capitalized) for non-basic saves, or `"basic <Statistic>"` for basic saves.
- * Returns an empty string when the spell targets neither AC nor a save.
- *
- * @param {Item} spell - A PF2e spell item document.
- * @returns {string} The defense label to display, or `""` if none applies.
- */
-function getDefense(spell) {
-  const save = spell.system.defense?.save;
-  if (!save) return spell.system.traits.value.includes("attack") ? "AC" : "";
-  return save.basic
-    ? `basic ${capitalize(save.statistic)}`
-    : capitalize(save.statistic);
-}
-
-/**
- * Gets parent item for item spells
- * @param {Actor} actor
- * @param {string} entryKey
- * @returns Item
- */
-function getParentItem(actor, entryKey) {
-  const itemId = entryKey.split("-casting")[0];
-  return actor.items.get(itemId);
-}
 /**
  * Groups an array of spell items by their effective cast rank.
  *
@@ -201,6 +173,8 @@ function getSlotInfo(isRegularEntry, rankKey, entry, rankSpells, actor) {
   const prepType = entry.system.prepared.value;
 
   if (prepType === "spontaneous" && slot) {
+    console.log(rankSpells);
+    console.log(entry);
     return { type: "spontaneous", current: slot.value, max: slot.max };
   }
 
@@ -307,7 +281,13 @@ function buildSpellViewModels(slotInfo, rankSpells, entryKey, rankKey, actor) {
   // the spell's own heightenedLevel (which stays at the spell's base rank).
   const slotRank = rankKey === "cantrips" ? 0 : Number.parseInt(rankKey);
 
-  const toViewModel = (spell, slotId, expended, castRank) => ({
+  const toViewModel = (
+    spell,
+    slotId,
+    expended,
+    castRank,
+    isVirtual = false,
+  ) => ({
     _id: spell._id,
     name: spell.name,
     img: spell.img,
@@ -324,6 +304,8 @@ function buildSpellViewModels(slotInfo, rankSpells, entryKey, rankKey, actor) {
     itemId: parentItem?._id,
     hasUses,
     uses: spell.system.location?.uses,
+    isSignature: spell.system.location?.signature ?? false,
+    isVirtual,
   });
 
   if (slotInfo.type === "prepared") {
@@ -421,6 +403,6 @@ export function extractSpells(actor) {
       });
     }
   }
-
+  injectSignatureVirtuals(rankMap, collections);
   return rankMap;
 }

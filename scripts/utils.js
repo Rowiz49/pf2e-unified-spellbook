@@ -63,3 +63,32 @@ export function capitalize(str) {
   if (!str) return "";
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+/**
+ * Derives the defense string for a spell.
+ *
+ * Returns `"AC"` for attack spells with no save, the save's statistic name
+ * (capitalized) for non-basic saves, or `"basic <Statistic>"` for basic saves.
+ * Returns an empty string when the spell targets neither AC nor a save.
+ *
+ * @param {Item} spell - A PF2e spell item document.
+ * @returns {string} The defense label to display, or `""` if none applies.
+ */
+export function getDefense(spell) {
+  const save = spell.system.defense?.save;
+  if (!save) return spell.system.traits.value.includes("attack") ? "AC" : "";
+  return save.basic
+    ? `basic ${capitalize(save.statistic)}`
+    : capitalize(save.statistic);
+}
+
+/**
+ * Gets parent item for item spells
+ * @param {Actor} actor
+ * @param {string} entryKey
+ * @returns Item
+ */
+export function getParentItem(actor, entryKey) {
+  const itemId = entryKey.split("-casting")[0];
+  return actor.items.get(itemId);
+}
