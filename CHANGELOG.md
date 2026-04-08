@@ -1,3 +1,9 @@
+# 1.3.0
+
+- Fixes action glyphs not showing properly
+- Fixes prepared heightened spells disappearing
+- Adds support for signature spells
+
 # 1.2.0
 
 - Added language support
