@@ -1,39 +1,4 @@
-// ---------------------------------------------------------------------------
-// Utility helpers
-// ---------------------------------------------------------------------------
-
-/**
- * Returns the ordinal string for a given positive integer.
- *
- * @param {number} n - A positive integer (e.g. 1, 2, 3).
- * @returns {string} The number with its ordinal suffix (e.g. "1st", "2nd", "3rd", "4th").
- *
- * @example
- * getOrdinalLabel(1);  // "1st"
- * getOrdinalLabel(11); // "11th"
- * getOrdinalLabel(22); // "22nd"
- */
-export function getOrdinalLabel(n) {
-  const s = ["th", "st", "nd", "rd"];
-  const v = n % 100;
-  return `${n}${s[(v - 20) % 10] || s[v] || s[0]}`;
-}
-
-/**
- * Capitalizes the first character of a string, leaving the rest unchanged.
- *
- * @param {string} str - The input string.
- * @returns {string} The string with its first character uppercased,
- *   or an empty string if the input is falsy.
- *
- * @example
- * capitalize("reflex"); // "Reflex"
- * capitalize("");       // ""
- */
-function capitalize(str) {
-  if (!str) return "";
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
+import { getActionGlyph, capitalize, getOrdinalLabel } from "./utils.js";
 
 // ---------------------------------------------------------------------------
 // Spell data extraction
@@ -334,10 +299,7 @@ function buildSpellViewModels(slotInfo, rankSpells, entryKey, rankKey, actor) {
     groupId: rankKey,
     slotId,
     expended,
-    actions:
-      (spell.system.time?.value === "reaction"
-        ? "R"
-        : spell.system.time?.value) ?? "",
+    actions: getActionGlyph(spell.system.time?.value),
     defense: getDefense(spell),
     range: spell.system.range?.value ?? "",
     isDrawn,
