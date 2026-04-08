@@ -121,12 +121,34 @@ function getParentItem(actor, entryKey) {
  */
 function getSpellsByRank(spells, entry) {
   const spellsByRank = new Map();
+  const prepType = entry?.system?.prepared?.value;
+  const isFocus = prepType === "focus";
 
-  const isFocus = entry?.system?.prepared?.value === "focus";
+  // Build a quick lookup so we don't scan the array repeatedly.
+  const spellById = new Map(spells.map((s) => [s._id, s]));
 
+  if (prepType === "prepared" && entry.system?.slots) {
+    // Source of truth is the slot data, not the spell's own heightenedLevel.
+    for (const [slotKey, slot] of Object.entries(entry.system.slots)) {
+      if (!slot.prepared?.length) continue;
+
+      const slotNum = Number.parseInt(slotKey.replace("slot", ""));
+      const rankKey = slotNum === 0 ? "cantrips" : String(slotNum);
+
+      if (!spellsByRank.has(rankKey)) spellsByRank.set(rankKey, []);
+
+      for (const prepared of slot.prepared) {
+        if (!prepared.id) continue;
+        const spell = spellById.get(prepared.id);
+        if (spell) spellsByRank.get(rankKey).push(spell);
+      }
+    }
+    return spellsByRank;
+  }
+
+  // Original logic for every other entry type.
   for (const spell of spells) {
     let rankKey;
-
     if (isFocus) {
       rankKey = "focus";
     } else {
@@ -137,7 +159,6 @@ function getSpellsByRank(spells, entry) {
             spell.system.location?.heightenedLevel ?? spell.system.level.value,
           );
     }
-
     if (!spellsByRank.has(rankKey)) spellsByRank.set(rankKey, []);
     spellsByRank.get(rankKey).push(spell);
   }
@@ -279,19 +300,19 @@ function getStaffData(actor, entry) {
 function buildSpellViewModels(slotInfo, rankSpells, entryKey, rankKey, actor) {
   const parentItem =
     slotInfo.type === "equipment" ? getParentItem(actor, entryKey) : null;
-
   const isDrawn = parentItem?.system?.equipped?.carryType === "held";
-
   const hasUses = slotInfo.type === "innate";
 
-  /** @param {Item} spell @param {number|null} slotId @param {boolean} expended */
-  const toViewModel = (spell, slotId, expended) => ({
+  // For prepared spells the authoritative cast rank is the slot rank, not
+  // the spell's own heightenedLevel (which stays at the spell's base rank).
+  const slotRank = rankKey === "cantrips" ? 0 : Number.parseInt(rankKey);
+
+  const toViewModel = (spell, slotId, expended, castRank) => ({
     _id: spell._id,
     name: spell.name,
     img: spell.img,
     entryId: entryKey,
-    castRank:
-      spell.system.location?.heightenedLevel ?? spell.system.level.value,
+    castRank,
     groupId: rankKey,
     slotId,
     expended,
@@ -306,18 +327,18 @@ function buildSpellViewModels(slotInfo, rankSpells, entryKey, rankKey, actor) {
   });
 
   if (slotInfo.type === "prepared") {
-    // One entry per filled slot — duplicates intentional.
     return slotInfo.slots
       .filter((s) => s.spellId)
       .flatMap((s) => {
         const spell = rankSpells.find((r) => r._id === s.spellId);
-        return spell ? [toViewModel(spell, s.slotId, s.expended)] : [];
+        // Pass slotRank so data-cast-rank and data-group-id match the
+        // slot the spell is actually prepared in, not its base level.
+        return spell
+          ? [toViewModel(spell, s.slotId, s.expended, slotRank)]
+          : [];
       });
   }
 
-  // Spontaneous: grey out all spells when no slots remain.
-  // Focus: grey out all spells when the focus pool is empty.
-  // Cantrips: never expended regardless of slot type.
   let expended =
     rankKey !== "cantrips" &&
     ((slotInfo.type === "spontaneous" && slotInfo.current === 0) ||
@@ -331,11 +352,19 @@ function buildSpellViewModels(slotInfo, rankSpells, entryKey, rankKey, actor) {
   if (slotInfo.type === "innate") {
     return rankSpells.map((spell) => {
       const expended = spell.system.location?.uses?.value === 0;
-      return toViewModel(spell, null, expended);
+      // Innate spells use their own heightened level as before.
+      const castRank =
+        spell.system.location?.heightenedLevel ?? spell.system.level.value;
+      return toViewModel(spell, null, expended, castRank);
     });
   }
 
-  return rankSpells.map((spell) => toViewModel(spell, null, expended));
+  // Spontaneous / focus / staff / equipment: use the spell's own rank.
+  return rankSpells.map((spell) => {
+    const castRank =
+      spell.system.location?.heightenedLevel ?? spell.system.level.value;
+    return toViewModel(spell, null, expended, castRank);
+  });
 }
 
 /**
