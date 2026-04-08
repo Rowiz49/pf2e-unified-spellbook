@@ -1,5 +1,5 @@
-import { getOrdinalLabel, extractSpells } from "./spell-extractor.js";
-
+import { extractSpells } from "./spell-extractor.js";
+import { getOrdinalLabel } from "./utils.js";
 /** Path to the Handlebars template used to render the unified spell list. */
 const TEMPLATE_PATH =
   "modules/pf2e-unified-spellbook/templates/unified-spell-list.hbs";
