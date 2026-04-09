@@ -43,7 +43,7 @@
 
 
           {{#if (unifiedEq slotInfo.type "focus")}}
-          <section class="focus-pool" data-action="adjust-resource" data-resource="focus">
+          <section class="focus-pool" data-action="adjust-resource" data-resource="focus" style="cursor: pointer;">
             <span class="pips">
               {{#each slotInfo.slots}}
               <i class="{{#if expended}}fa-regular fa-circle{{else}}fa-solid fa-circle-dot{{/if}} "></i>

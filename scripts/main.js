@@ -1,4 +1,5 @@
 import { extractSpells } from "./spell-extractor.js";
+import { registerFocusPointListener } from "./spell-slot-listeners.js";
 import { getOrdinalLabel } from "./utils.js";
 /** Path to the Handlebars template used to render the unified spell list. */
 const TEMPLATE_PATH =
@@ -135,6 +136,8 @@ async function onRenderCreatureSheet(sheet, html) {
   toggleBtn.on("click", () => {
     actor.setFlag(FLAG_SCOPE, FLAG_KEY, !unified);
   });
+
+  registerFocusPointListener(actor, html);
 }
 
 // ---------------------------------------------------------------------------
