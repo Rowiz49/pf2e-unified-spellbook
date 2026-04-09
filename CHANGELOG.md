@@ -1,3 +1,7 @@
+# 1.3.1
+
+- Added support to modify focus points in the unified view
+
 # 1.3.0
 
 - Fixes action glyphs not showing properly
