@@ -173,8 +173,6 @@ function getSlotInfo(isRegularEntry, rankKey, entry, rankSpells, actor) {
   const prepType = entry.system.prepared.value;
 
   if (prepType === "spontaneous" && slot) {
-    console.log(rankSpells);
-    console.log(entry);
     return { type: "spontaneous", current: slot.value, max: slot.max };
   }
 
