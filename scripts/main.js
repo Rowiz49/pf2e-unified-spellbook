@@ -127,8 +127,8 @@ async function onRenderCreatureSheet(sheet, html) {
   if (unified) {
     defaultList.hide();
     addEntryBtn.hide();
-
     unifiedEl.show();
+    registerFocusPointListener(actor, html);
   }
 
   // On click, flip the flag. The flag update triggers a sheet re-render,
@@ -136,8 +136,6 @@ async function onRenderCreatureSheet(sheet, html) {
   toggleBtn.on("click", () => {
     actor.setFlag(FLAG_SCOPE, FLAG_KEY, !unified);
   });
-
-  registerFocusPointListener(actor, html);
 }
 
 // ---------------------------------------------------------------------------

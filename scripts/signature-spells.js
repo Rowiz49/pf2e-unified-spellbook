@@ -43,6 +43,7 @@ function addVirtualSpell(spell, entry, rankMap, key, collection) {
       castRank: slotNum,
       groupId: rankKey,
       slotId: null,
+      prepType: "spontaneous",
       expended: slot.value === 0,
       actions: getActionGlyph(spell.system.time?.value),
       defense: getDefense(spell),
@@ -66,6 +67,7 @@ function addVirtualSpell(spell, entry, rankMap, key, collection) {
       sources.push({
         entryId: key,
         entryName: collection.name,
+        itemId: entry?._id ?? null,
         slotNum,
         slotInfo: {
           type: "spontaneous",

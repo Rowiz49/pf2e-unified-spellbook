@@ -13,13 +13,13 @@
 
       {{!-- Origin sub-header: omitted entirely for cantrips --}}
       {{#if ../isCantrip}}
-      <li class="header-row" style="
+      <li class="header-row" data-item-id="{{itemId}}" data-group-id="cantrips" style="
         {{#if @first}}margin-top: 6px;{{/if}}
         background: rgba(0,0,0,0.04);
         border-top: 1px solid var(--color-border-light-tertiary, #ccc);
         border-bottom: 1px solid var(--color-border-light-tertiary, #ccc);
       ">
-        <div class="item-name" style="gap: 6px; font-style: italic;">
+        <div class="item-name" style="gap: 6px;">
           <h3 style="font-size: 0.82em; opacity: 0.75; margin: 0;">{{entryName}}</h3>
         </div>
         <div class="defense">{{localize "pf2e-unified-spellbook.Defense"}}</div>
@@ -28,17 +28,35 @@
         <div class="item-controls invisible"></div>
       </li>
       {{else}}
-      <li class="header-row" style="
+      <li class="header-row" data-item-id="{{itemId}}" data-group-id="{{slotNum}}" style="
         {{#if @first}}margin-top: 6px;{{/if}}
         background: rgba(0,0,0,0.04);
         border-top: 1px solid var(--color-border-light-tertiary, #ccc);
         border-bottom: 1px solid var(--color-border-light-tertiary, #ccc);
       ">
-        <div class="item-name" style="gap: 6px; font-style: italic;">
+        <div class="item-name" style="gap: 6px;">
           <h3 style="font-size: 0.82em; opacity: 0.75; margin: 0;">{{entryName}}</h3>
 
           {{#if (unifiedEq slotInfo.type "spontaneous")}}
-          <span class="flex0">{{slotInfo.current}} / {{slotInfo.max}} </span>
+          <span class="spell-slots-input">             
+            <input
+              type="number"
+              data-item-property="system.slots.slot{{slotNum}}.value"
+              value="{{slotInfo.current}}"
+              placeholder="0"
+              data-item-id="{{itemId}}"
+            />
+            </span>
+            <span class="slash">/</span>
+            <span class="spell-max-input">             
+            <input
+              type="number"
+              placeholder="0"
+              data-item-property="system.slots.slot{{slotNum}}.max"
+              value="{{slotInfo.max}}"
+              data-item-id="{{itemId}}"
+            /></span>
+            <a data-action="reset-spell-slots"><i class="fa-solid fa-arrow-rotate-right"></i></a>
           {{/if}}
 
 
@@ -57,7 +75,10 @@
           {{/if}}
 
           {{#if (unifiedEq slotInfo.type "staff")}}
-          <span class="flex0">{{slotInfo.current}} / {{slotInfo.max}}</span>
+          <div class="pf2e-dailies-charges">
+          <input type="number" data-action="change-charges-unified" min="0" value="{{slotInfo.current}}" max="{{slotInfo.max}}" step="1" style="">
+          <a data-action="reset-charges-unified"><i class="fas fa-redo" style=""></i></a>
+          </div>
           {{/if}}
         </div>
         <div class="defense">{{localize "pf2e-unified-spellbook.Defense"}}</div>
@@ -94,8 +115,25 @@
         </div>
         <div class="defense">{{defense}}</div>
         {{#if hasUses}}
-        <div class="range">{{#if (unifiedEq groupId "cantrips")}}{{range}}{{else}}{{uses.value}} / {{uses.max}}{{/if}}
-        </div>
+          {{#if (unifiedEq groupId "cantrips")}}
+            <div class="range">{{range}}</div>
+          {{else}}
+              <div class="uses" style="margin-right: 16px;">
+                <span class="spell-slots-input">
+                  <input type="number" data-item-id="{{_id}}" 
+                    data-item-property="system.location.uses.value" 
+                    value="{{uses.value}}" placeholder="0">
+                </span>
+                <span class="slash">/</span>
+                <span class="spell-max-input">
+                  <input type="number" data-item-id="{{_id}}"
+                    data-item-property="system.location.uses.max"
+                    value="{{uses.max}}" placeholder="0">
+                </span>
+                <a data-action="reset-spell-slots"><i class="fa-solid fa-arrow-rotate-right"></i></a>
+              </div>
+          {{/if}}
+
         {{else}}
         <div class="range">{{range}}</div>
         {{/if}}
@@ -113,11 +151,18 @@
         </button>
         {{/if}}
         <div class="item-controls">
-          {{#if isSignature}}
-          <a data-action="toggle-signature-spell" data-tooltip="PF2E.ToggleSignatureSpellTitle">
-            <i class="fa-fw fa-star {{#if isVirtual}}fa-solid{{else}}fa-solid{{/if}}"></i>
-          </a>
-          {{/if}}
+          {{#unless (unifiedEq groupId "cantrips")}}
+            
+            {{#if (unifiedEq prepType "spontaneous")}}
+            <a data-action="toggle-signature-spell" data-tooltip="PF2E.ToggleSignatureSpellTitle">
+              <i class="fa-fw fa-star {{#if isSignature}}fa-solid{{else}}fa-regular{{/if}}"></i>
+            </a>
+            {{/if}}
+
+            {{#if (unifiedEq prepType "prepared")}}
+              <a data-action="toggle-slot-expended" data-tooltip="PF2E.ExpendSpellTitle"><i class="fa-solid fa-fw {{#if expended}}fa-plus-square{{else}}fa-minus-square{{/if}}"></i></a>
+            {{/if}}
+          {{/unless}}
           {{#unless isVirtual}}
           <a data-action="edit-item" data-tooltip="PF2E.EditItemTitle"><i class="fa-solid fa-fw fa-edit"></i></a>
           <a data-action="delete-item" data-tooltip="PF2E.DeleteItemTitle"><i class="fa-solid fa-fw fa-trash"></i></a>

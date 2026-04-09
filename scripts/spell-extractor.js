@@ -74,6 +74,7 @@ import { getStaffData } from "./pf2e-dailies-staves.js";
 /**
  * @typedef {Object} SourceEntry
  * @property {string}           entryId   - Key of the spellcasting collection this source belongs to.
+ * @property {string|null}      itemId    - Foundry item ID of the spellcasting entry.
  * @property {string}           entryName - Display name of the spellcasting entry (e.g. "Arcane Prepared").
  * @property {number}           slotNum   - Numeric slot index used in `system.slots.slot{N}` (0 for cantrips).
  * @property {SlotInfo}         slotInfo  - Slot state for this source at the current rank.
@@ -256,7 +257,8 @@ function buildSpellViewModels(slotInfo, rankSpells, entryKey, rankKey, actor) {
     name: spell.name,
     img: spell.img,
     entryId: entryKey,
-    castRank,
+    castRank: castRank > 0 ? castRank : 1,
+    prepType: slotInfo.type,
     groupId: rankKey,
     slotId,
     expended,
@@ -361,6 +363,7 @@ export function extractSpells(actor) {
       rankMap.get(rankKey).push({
         entryId: key,
         entryName: collection.name,
+        itemId: entry?._id ?? null,
         slotNum,
         slotInfo,
         spells: spellViewModels,
