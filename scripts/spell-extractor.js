@@ -87,10 +87,12 @@ import { getStaffData } from "./pf2e-dailies-staves.js";
  *
  * Cantrips are placed under the special key `"cantrips"`. All other spells
  * use the heightened level when available, falling back to the spell's base
- * level.
+ * level. Spells that are not currently prepared in any slot are ignored for prepared entries.
  *
  * @param {Item[]} spells - Array of PF2e spell item documents belonging to
  *   a single spellcasting collection.
+ * @param {Object} entry   - The spellcasting entry document, used to determine
+ *   preparation type and slot-based spell assignments for prepared entries.
  * @returns {Map<string, Item[]>} A map from rank key to the spells at that rank.
  */
 function getSpellsByRank(spells, entry) {
@@ -103,21 +105,7 @@ function getSpellsByRank(spells, entry) {
 
   if (prepType === "prepared" && entry.system?.slots) {
     // Source of truth is the slot data, not the spell's own heightenedLevel.
-    for (const [slotKey, slot] of Object.entries(entry.system.slots)) {
-      if (!slot.prepared?.length) continue;
-
-      const slotNum = Number.parseInt(slotKey.replace("slot", ""));
-      const rankKey = slotNum === 0 ? "cantrips" : String(slotNum);
-
-      if (!spellsByRank.has(rankKey)) spellsByRank.set(rankKey, []);
-
-      for (const prepared of slot.prepared) {
-        if (!prepared.id) continue;
-        const spell = spellById.get(prepared.id);
-        if (spell) spellsByRank.get(rankKey).push(spell);
-      }
-    }
-    return spellsByRank;
+    return getPreparedSpellsByRank(entry, spellsByRank, spellById);
   }
 
   for (const spell of spells) {
@@ -136,6 +124,31 @@ function getSpellsByRank(spells, entry) {
     spellsByRank.get(rankKey).push(spell);
   }
 
+  return spellsByRank;
+}
+
+/**
+ * Gets prepared spells for a spellcasting entry, grouped by rank. The source of truth is the `entry.system.slots` data, which determines how many slots of each rank there are and which spells are prepared in them. Spells that are not currently prepared in any slot are ignored.
+ * @param {Object} entry - The spellcasting entry document, used to determine preparation type and slot-based spell assignments.
+ * @param {Map<string, Item[]>} spellsByRank - The map being built of spells by rank, used to group the prepared spells.
+ * @param {Map<string, Item>} spellById - A lookup map from spell ID to spell document, used to resolve the spell items for prepared slots.
+ * @returns {Map<string, Item[]>} The updated map of spells by rank, now including the prepared spells.
+ */
+function getPreparedSpellsByRank(entry, spellsByRank, spellById) {
+  for (const [slotKey, slot] of Object.entries(entry.system.slots)) {
+    if (!slot.prepared?.length) continue;
+
+    const slotNum = Number.parseInt(slotKey.replace("slot", ""));
+    const rankKey = slotNum === 0 ? "cantrips" : String(slotNum);
+
+    if (!spellsByRank.has(rankKey)) spellsByRank.set(rankKey, []);
+
+    for (const prepared of slot.prepared) {
+      if (!prepared.id) continue;
+      const spell = spellById.get(prepared.id);
+      if (spell) spellsByRank.get(rankKey).push(spell);
+    }
+  }
   return spellsByRank;
 }
 

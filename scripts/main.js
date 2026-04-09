@@ -1,5 +1,5 @@
 import { extractSpells } from "./spell-extractor.js";
-import { registerFocusPointListener } from "./spell-slot-listeners.js";
+import { registerEventListeners } from "./spell-slot-listeners.js";
 import { getOrdinalLabel } from "./utils.js";
 /** Path to the Handlebars template used to render the unified spell list. */
 const TEMPLATE_PATH =
@@ -128,7 +128,7 @@ async function onRenderCreatureSheet(sheet, html) {
     defaultList.hide();
     addEntryBtn.hide();
     unifiedEl.show();
-    registerFocusPointListener(actor, html);
+    registerEventListeners(actor, html);
   }
 
   // On click, flip the flag. The flag update triggers a sheet re-render,

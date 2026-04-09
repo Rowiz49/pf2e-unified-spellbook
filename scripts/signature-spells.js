@@ -24,6 +24,14 @@ export function injectSignatureVirtuals(rankMap, collections) {
     }
   }
 }
+/**
+ * Adds a virtual spell to the unified spell list. These are heightened signature spells that don't exist as actual items on the actor but are displayed in the unified spell list when their base spell is signature and there are higher-level slots available.
+ * @param {*} spell Spell item that is the source of the virtual spell
+ * @param {*} entry Entry that provides the slots to determine which virtual spells to create
+ * @param {*} rankMap Map of rank keys to spell sources, used to find the correct group for the virtual spell
+ * @param {*} key The key of the collection this spell belongs to (e.g. "spells", "focusSpells"), used to identify the source entry in the rankMap
+ * @param {*} collection The collection this spell belongs to, used to get the entry name for the virtual spell source
+ */
 function addVirtualSpell(spell, entry, rankMap, key, collection) {
   const nativeRank =
     spell.system.location?.heightenedLevel ?? spell.system.level.value;

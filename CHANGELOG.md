@@ -1,3 +1,11 @@
+# 2.0.0
+
+- Added support to modify spontaneous spell slots
+- Added support to modify prepared spell slots (only to recharge/expend them)
+- Added support to modify innate spells charges
+- Added support to modify signature spells
+- Added support to modify staff charges
+
 # 1.3.1
 
 - Added support to modify focus points in the unified view
