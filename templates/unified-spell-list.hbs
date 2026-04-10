@@ -136,7 +136,7 @@
           data-cast-rank="{{castRank}}"
           data-group-id="{{groupId}}"
           {{#if slotId}}data-slot-id="{{slotId}}"{{/if}}
-          {{#if (unifiedOr expended (unifiedNot isPrimaryAnimistVesselSpell))}}data-slot-expended=""{{/if}}
+          {{#if (unifiedOr expended (unifiedAnd isAnimistVesselSpell (unifiedNot isPrimaryAnimistVesselSpell)))}}data-slot-expended=""{{/if}}
         >
 
           {{!-- Spell name + icon --}}
