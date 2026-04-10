@@ -2,7 +2,7 @@ import { getDailies } from "../utils.js";
 
 /**
  * Checks if a spell is a primary animist vessel spell.
- * @param {Actor} actor
+ * @param {Actor} actor The actor to check the spell against, used to access dailies data to determine if the spell is a primary vessel spell.
  * @param {*} spell The spell to check.
  * @returns {boolean} True if the spell is a primary animist vessel spell, false otherwise.
  */
@@ -21,23 +21,17 @@ export async function registerAnimistListeners(actor, html) {
     const btn = event.target.closest(
       "[data-action='dailies-retrain-unified'][data-retrain-type='vessel']",
     );
-    if (!btn) return;
+    if (!btn || btn.dataset.retraining) return;
 
     event.stopPropagation();
     event.preventDefault();
-
-    // Prevent double-clicks
-    if (btn.dataset.retraining) return;
     btn.dataset.retraining = "true";
 
     const spellRow = btn.closest("[data-item-id]");
-    if (!spellRow) return;
-    const selectedId = spellRow.dataset.itemId;
-
     const dailies = game.dailies.api;
-    if (!dailies?.retrain) return;
+    if (!spellRow || !dailies?.retrain) return;
 
-    await dailies.retrain(actor, selectedId, "vessel");
+    await dailies.retrain(actor, spellRow.dataset.itemId, "vessel");
     actor.sheet.render();
   });
 }

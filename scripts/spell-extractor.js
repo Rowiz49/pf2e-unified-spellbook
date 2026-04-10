@@ -1,7 +1,8 @@
-import { getActionGlyph, getDefense, getParentItem } from "./utils.js";
+import { getParentItem } from "./utils.js";
 import { injectSignatureVirtuals } from "./signature-spells.js";
 import { getStaffData } from "./pf2e-dailies/staves.js";
 import { isPrimaryAnimistVesselSpell } from "./pf2e-dailies/animist.js";
+import { buildBaseViewModel } from "./spell-view-model.js";
 // ---------------------------------------------------------------------------
 // Spell data extraction
 // ---------------------------------------------------------------------------
@@ -257,83 +258,65 @@ function buildSpellViewModels(slotInfo, rankSpells, entryKey, rankKey, actor) {
   const parentItem =
     slotInfo.type === "equipment" ? getParentItem(actor, entryKey) : null;
   const isDrawn = parentItem?.system?.equipped?.carryType === "held";
-  const hasUses = slotInfo.type === "innate";
-
-  // For prepared spells the authoritative cast rank is the slot rank, not
-  // the spell's own heightenedLevel (which stays at the spell's base rank).
   const slotRank = rankKey === "cantrips" ? 0 : Number.parseInt(rankKey);
 
-  const toViewModel = (
-    spell,
-    slotId,
-    expended,
-    castRank,
-    isVirtual = false,
-  ) => ({
-    _id: spell._id,
-    name: spell.name,
-    img: spell.img,
-    entryId: entryKey,
-    castRank: castRank > 0 ? castRank : 1,
-    prepType: slotInfo.type,
-    groupId: rankKey,
-    slotId,
-    expended,
-    actions: getActionGlyph(spell.system.time?.value),
-    defense: getDefense(spell),
-    range: spell.system.range?.value ?? "",
-    isDrawn,
-    isItem: slotInfo.type === "equipment",
-    itemId: parentItem?._id,
-    hasUses,
-    uses: spell.system.location?.uses,
-    isSignature: spell.system.location?.signature ?? false,
-    isVirtual,
-    isAnimistVesselSpell: slotInfo.isAnimistVessel ?? false,
-    isPrimaryAnimistVesselSpell:
-      (slotInfo.isAnimistVessel ?? false) &&
-      isPrimaryAnimistVesselSpell(actor, spell),
-  });
+  const toViewModel = (spell, overrides = {}) =>
+    buildBaseViewModel(spell, entryKey, rankKey, {
+      prepType: slotInfo.type,
+      isDrawn,
+      isItem: slotInfo.type === "equipment",
+      itemId: parentItem?._id ?? null,
+      hasUses: slotInfo.type === "innate",
+      uses: spell.system.location?.uses ?? null,
+      isSignature: spell.system.location?.signature ?? false,
+      isAnimistVesselSpell: slotInfo.isAnimistVessel ?? false,
+      isPrimaryAnimistVesselSpell:
+        (slotInfo.isAnimistVessel ?? false) &&
+        isPrimaryAnimistVesselSpell(actor, spell),
+      ...overrides,
+    });
 
   if (slotInfo.type === "prepared") {
     return slotInfo.slots
       .filter((s) => s.spellId)
       .flatMap((s) => {
         const spell = rankSpells.find((r) => r._id === s.spellId);
-        // Pass slotRank so data-cast-rank and data-group-id match the
-        // slot the spell is actually prepared in, not its base level.
         return spell
-          ? [toViewModel(spell, s.slotId, s.expended, slotRank)]
+          ? [
+              toViewModel(spell, {
+                castRank: slotRank,
+                slotId: s.slotId,
+                expended: s.expended,
+              }),
+            ]
           : [];
       });
   }
 
-  let expended =
+  if (slotInfo.type === "innate") {
+    return rankSpells.map((spell) =>
+      toViewModel(spell, {
+        castRank:
+          spell.system.location?.heightenedLevel ?? spell.system.level.value,
+        expended: spell.system.location?.uses?.value === 0,
+      }),
+    );
+  }
+
+  const expended =
     rankKey !== "cantrips" &&
     ((slotInfo.type === "spontaneous" && slotInfo.current === 0) ||
       (slotInfo.type === "focus" && slotInfo.current === 0) ||
-      (slotInfo.type === "staff" && slotInfo.current === 0));
+      (slotInfo.type === "staff" && slotInfo.current === 0) ||
+      (slotInfo.type === "equipment" && parentItem?.system?.uses?.value === 0));
 
-  if (slotInfo.type === "equipment") {
-    expended = parentItem?.system?.uses?.value === 0;
-  }
-
-  if (slotInfo.type === "innate") {
-    return rankSpells.map((spell) => {
-      const expended = spell.system.location?.uses?.value === 0;
-      // Innate spells use their own heightened level as before.
-      const castRank =
-        spell.system.location?.heightenedLevel ?? spell.system.level.value;
-      return toViewModel(spell, null, expended, castRank);
-    });
-  }
-
-  // Spontaneous / focus / staff / equipment: use the spell's own rank.
-  return rankSpells.map((spell) => {
-    const castRank =
-      spell.system.location?.heightenedLevel ?? spell.system.level.value;
-    return toViewModel(spell, null, expended, castRank);
-  });
+  return rankSpells.map((spell) =>
+    toViewModel(spell, {
+      castRank:
+        spell.system.location?.heightenedLevel ?? spell.system.level.value,
+      expended,
+    }),
+  );
 }
 
 /**

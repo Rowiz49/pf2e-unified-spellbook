@@ -1,4 +1,4 @@
-import { getActionGlyph, getDefense } from "./utils.js";
+import { buildBaseViewModel } from "./spell-view-model.js";
 /**
  * For spontaneous entries, injects virtual SpellViewModels for signature spells
  * at every rank above their native rank that has available slots (max > 0).
@@ -43,27 +43,13 @@ function addVirtualSpell(spell, entry, rankMap, key, collection) {
     const rankKey = String(slotNum);
     if (!rankMap.has(rankKey)) continue;
 
-    const virtualVm = {
-      _id: spell._id,
-      name: spell.name,
-      img: spell.img,
-      entryId: key,
+    const virtualVm = buildBaseViewModel(spell, key, rankKey, {
       castRank: slotNum,
-      groupId: rankKey,
-      slotId: null,
       prepType: "spontaneous",
       expended: slot.value === 0,
-      actions: getActionGlyph(spell.system.time?.value),
-      defense: getDefense(spell),
-      range: spell.system.range?.value ?? "",
-      isDrawn: false,
-      isItem: false,
-      itemId: null,
-      hasUses: false,
-      uses: null,
       isSignature: true,
       isVirtual: true,
-    };
+    });
 
     const sources = rankMap.get(rankKey);
     const existingSource = sources.find((s) => s.entryId === key);

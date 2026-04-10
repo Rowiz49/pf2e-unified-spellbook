@@ -8,7 +8,6 @@ import { getDailies } from "../utils.js";
  */
 export function getStaffData(actor, entry) {
   const rawStaves = getDailies(actor)?.staves;
-
   const stavesArray = Array.isArray(rawStaves)
     ? rawStaves
     : rawStaves
@@ -16,22 +15,9 @@ export function getStaffData(actor, entry) {
       : [];
   const staffId =
     entry.staff?._id ?? entry.staff?.id ?? entry.id?.replace(/-casting$/, "");
-
   const staffData = stavesArray.find((s) => s.staffId === staffId);
-  if (staffData) {
-    const charges = staffData.charges ?? { value: 0, max: 0 };
-    return {
-      type: "staff",
-      current: charges.value,
-      max: charges.max,
-    };
-  } else {
-    return {
-      type: "staff",
-      current: 0,
-      max: 0,
-    };
-  }
+  const charges = staffData?.charges ?? { value: 0, max: 0 };
+  return { type: "staff", current: charges.value, max: charges.max };
 }
 
 /**
