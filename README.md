@@ -18,4 +18,4 @@ Open your character sheet and go to the Known Spells tab. Click the Unified Rank
 
 # Preview
 
-<img width="1026" height="1404" alt="image" src="https://github.com/user-attachments/assets/314081b6-2d99-4c05-89fe-73c8db75a1b0" />
+<img width="1026" height="1404" alt="image" src="https://i.imgur.com/WfF7tBH.png" />
