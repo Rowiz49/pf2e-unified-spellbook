@@ -136,7 +136,7 @@
           data-cast-rank="{{castRank}}"
           data-group-id="{{groupId}}"
           {{#if slotId}}data-slot-id="{{slotId}}"{{/if}}
-          {{#if expended}}data-slot-expended=""{{/if}}
+          {{#if (unifiedOr expended (unifiedNot isPrimaryAnimistVesselSpell))}}data-slot-expended=""{{/if}}
         >
 
           {{!-- Spell name + icon --}}
@@ -194,13 +194,17 @@
               </button>
             {{/if}}
           {{else}}
-            <button type="button" class="cast-spell blue" data-action="cast-spell">
-              {{localize "pf2e-unified-spellbook.Cast"}}
-            </button>
+            
+              <button type="button" class="cast-spell blue {{#if (unifiedAnd isAnimistVesselSpell (unifiedNot isPrimaryAnimistVesselSpell))}} inactive {{/if}}" data-action="cast-spell" >
+                {{localize "pf2e-unified-spellbook.Cast"}}
+              </button>
           {{/if}}
 
           {{!-- Item controls (edit, delete, signature, expend) --}}
           <div class="item-controls">
+            {{#if (unifiedAnd isAnimistVesselSpell (unifiedNot isPrimaryAnimistVesselSpell))}}
+            <a data-action="dailies-retrain-unified" data-retrain-type="vessel" data-tooltip="Exchange Primary Vessel"><i class="fa-solid fa-retweet" style=""></i></a>
+            {{/if}}
             {{#unless (unifiedEq groupId "cantrips")}}
               {{#if (unifiedEq prepType "spontaneous")}}
                 <a data-action="toggle-signature-spell" data-tooltip="PF2E.ToggleSignatureSpellTitle">

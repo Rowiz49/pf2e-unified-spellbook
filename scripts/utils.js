@@ -92,3 +92,12 @@ export function getParentItem(actor, entryKey) {
   const itemId = entryKey.split("-casting")[0];
   return actor.items.get(itemId);
 }
+
+/**
+ * Gets the dailies data from the actor's flags.
+ * @param {Actor} actor
+ * @returns {Object|null} The dailies object or null if not found.
+ */
+export function getDailies(actor) {
+  return actor.flags?.["pf2e-dailies"]?.extra?.dailies;
+}

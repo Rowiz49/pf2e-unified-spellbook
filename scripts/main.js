@@ -29,6 +29,9 @@ function registerHelpers() {
    * @returns {boolean} `true` when `a === b`.
    */
   Handlebars.registerHelper("unifiedEq", (a, b) => a === b);
+  Handlebars.registerHelper("unifiedAnd", (a, b) => a && b);
+  Handlebars.registerHelper("unifiedOr", (a, b) => a || b);
+  Handlebars.registerHelper("unifiedNot", (a) => !a);
 }
 
 // ---------------------------------------------------------------------------
@@ -143,4 +146,4 @@ async function onRenderCreatureSheet(sheet, html) {
 // ---------------------------------------------------------------------------
 
 registerHelpers();
-Hooks.on("renderCreatureSheetPF2e", onRenderCreatureSheet);
+Hooks.on("renderActorSheetPF2e", onRenderCreatureSheet);

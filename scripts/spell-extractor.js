@@ -1,6 +1,7 @@
 import { getActionGlyph, getDefense, getParentItem } from "./utils.js";
 import { injectSignatureVirtuals } from "./signature-spells.js";
-import { getStaffData } from "./pf2e-dailies-staves.js";
+import { getStaffData } from "./pf2e-dailies/staves.js";
+import { isPrimaryAnimistVesselSpell } from "./pf2e-dailies/animist.js";
 // ---------------------------------------------------------------------------
 // Spell data extraction
 // ---------------------------------------------------------------------------
@@ -207,8 +208,11 @@ function getSlotInfo(isRegularEntry, rankKey, entry, rankSpells, actor) {
 
   if (prepType === "focus") {
     const focusPool = actor.system.resources.focus ?? { value: 0, max: 0 };
+    const isAnimistVessel =
+      entry.flags?.["pf2e-dailies"]?.identifier === "animist-focus";
     return {
       type: "focus",
+      isAnimistVessel,
       current: focusPool.value,
       max: focusPool.max,
       slots: Array.from({ length: focusPool.max }, (_, i) => ({
@@ -285,6 +289,10 @@ function buildSpellViewModels(slotInfo, rankSpells, entryKey, rankKey, actor) {
     uses: spell.system.location?.uses,
     isSignature: spell.system.location?.signature ?? false,
     isVirtual,
+    isAnimistVesselSpell: slotInfo.isAnimistVessel ?? false,
+    isPrimaryAnimistVesselSpell:
+      (slotInfo.isAnimistVessel ?? false) &&
+      isPrimaryAnimistVesselSpell(actor, spell),
   });
 
   if (slotInfo.type === "prepared") {
@@ -342,7 +350,6 @@ function buildSpellViewModels(slotInfo, rankSpells, entryKey, rankKey, actor) {
 export function extractSpells(actor) {
   const collections = actor.spellcasting.collections;
   const rankMap = new Map();
-
   const keys = [...collections.keys()];
 
   for (const key of keys) {
@@ -371,7 +378,7 @@ export function extractSpells(actor) {
         key,
         rankKey,
         actor,
-      );
+      ).sort((a, b) => a.name.localeCompare(b.name));
 
       rankMap.get(rankKey).push({
         entryId: key,
