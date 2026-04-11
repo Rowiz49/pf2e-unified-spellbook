@@ -1,6 +1,7 @@
 # 2.2.1
 
 - Updated to v14
+- Added compatibility to SF2e
 
 # 2.2.0
 
