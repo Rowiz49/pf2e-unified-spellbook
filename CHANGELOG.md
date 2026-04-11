@@ -1,3 +1,7 @@
+# 2.2.0
+
+- Added support for Flexible Spellcasting
+
 # 2.1.0
 
 - Added support for PF2e Dailies Animist implementation
