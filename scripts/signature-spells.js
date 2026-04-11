@@ -13,9 +13,16 @@ export function injectSignatureVirtuals(rankMap, collections) {
     if (key === "rituals") continue;
     const collection = collections.get(key);
     const entry = collection.entry;
-    if (entry.system?.prepared.value !== "spontaneous") continue;
+    if (
+      !(
+        entry.system?.prepared.value === "spontaneous" ||
+        entry.system?.prepared.flexible
+      )
+    )
+      continue;
 
     const spells = [...collection.values()];
+    console.log(spells);
     const signatures = spells.filter((s) => s.system.location?.signature);
     if (!signatures.length) continue;
 
@@ -36,6 +43,8 @@ function addVirtualSpell(spell, entry, rankMap, key, collection) {
   const nativeRank =
     spell.system.location?.heightenedLevel ?? spell.system.level.value;
 
+  const isFlexible = entry.system.prepared.flexible;
+
   for (const [slotKey, slot] of Object.entries(entry.system.slots)) {
     const slotNum = Number.parseInt(slotKey.replace("slot", ""));
     if (slotNum === 0 || slotNum <= nativeRank || slot.max === 0) continue;
@@ -49,6 +58,7 @@ function addVirtualSpell(spell, entry, rankMap, key, collection) {
       expended: slot.value === 0,
       isSignature: true,
       isVirtual: true,
+      isFlexible,
     });
 
     const sources = rankMap.get(rankKey);

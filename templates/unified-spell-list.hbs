@@ -129,7 +129,7 @@
         {{#each spells}}
         <li
           class="spell{{#if isVirtual}} virtual{{/if}}"
-          style="{{#if isVirtual}}background: rgba(50, 100, 200, 0.08);{{/if}}"
+          style="{{#if (unifiedAnd isVirtual (unifiedNot isFlexible))}} background: rgba(50, 100, 200, 0.08);{{/if}}"
           data-item-type="{{#if isVirtual}}spell-slot-group{{else}}spell{{/if}}"
           data-item-id="{{_id}}"
           data-entry-id="{{entryId}}"
@@ -205,14 +205,14 @@
             {{#if (unifiedAnd isAnimistVesselSpell (unifiedNot isPrimaryAnimistVesselSpell))}}
             <a data-action="dailies-retrain-unified" data-retrain-type="vessel" data-tooltip="Exchange Primary Vessel"><i class="fa-solid fa-retweet" style=""></i></a>
             {{/if}}
-            {{#unless (unifiedEq groupId "cantrips")}}
+            {{#unless (unifiedOr (unifiedEq groupId "cantrips") isFlexible)}}
               {{#if (unifiedEq prepType "spontaneous")}}
                 <a data-action="toggle-signature-spell" data-tooltip="PF2E.ToggleSignatureSpellTitle">
                   <i class="fa-fw fa-star {{#if isSignature}}fa-solid{{else}}fa-regular{{/if}}"></i>
                 </a>
               {{/if}}
               {{#if (unifiedEq prepType "prepared")}}
-                <a data-action="toggle-slot-expended" data-tooltip="PF2E.ExpendSpellTitle">
+                <a data-action="toggle-slot-expended" data-tooltip="{{#if expended}} PF2E.RestoreSpellTitle {{else}}PF2E.ExpendSpellTitle{{/if}}">
                   <i class="fa-solid fa-fw {{#if expended}}fa-plus-square{{else}}fa-minus-square{{/if}}"></i>
                 </a>
               {{/if}}

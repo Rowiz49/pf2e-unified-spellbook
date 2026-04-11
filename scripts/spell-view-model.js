@@ -27,6 +27,7 @@ export function buildBaseViewModel(spell, entryKey, rankKey, overrides = {}) {
     uses: null,
     isSignature: false,
     isVirtual: false,
+    isFlexible: false,
     isAnimistVesselSpell: false,
     isPrimaryAnimistVesselSpell: false,
     ...overrides,

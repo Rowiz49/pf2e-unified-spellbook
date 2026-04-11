@@ -105,7 +105,7 @@ function getSpellsByRank(spells, entry) {
   // Build a quick lookup so we don't scan the array repeatedly.
   const spellById = new Map(spells.map((s) => [s._id, s]));
 
-  if (prepType === "prepared" && entry.system?.slots) {
+  if (prepType === "prepared" && !entry.system?.prepared?.flexible) {
     // Source of truth is the slot data, not the spell's own heightenedLevel.
     return getPreparedSpellsByRank(entry, spellsByRank, spellById);
   }
@@ -187,9 +187,15 @@ function getSlotInfo(isRegularEntry, rankKey, entry, rankSpells, actor) {
   const slotNum = rankKey === "cantrips" ? 0 : Number.parseInt(rankKey);
   const slot = entry.system.slots[`slot${slotNum}`];
   const prepType = entry.system.prepared.value;
+  const isFlexible = entry.system.prepared.flexible;
 
-  if (prepType === "spontaneous" && slot) {
-    return { type: "spontaneous", current: slot.value, max: slot.max };
+  if ((prepType === "spontaneous" || isFlexible) && slot) {
+    return {
+      type: "spontaneous",
+      current: slot.value,
+      max: slot.max,
+      isFlexible,
+    };
   }
 
   if (prepType === "prepared" && slot) {
@@ -273,6 +279,7 @@ function buildSpellViewModels(slotInfo, rankSpells, entryKey, rankKey, actor) {
       isPrimaryAnimistVesselSpell:
         (slotInfo.isAnimistVessel ?? false) &&
         isPrimaryAnimistVesselSpell(actor, spell),
+      isFlexible: slotInfo.isFlexible ?? false,
       ...overrides,
     });
 
