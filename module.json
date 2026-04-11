@@ -23,6 +23,13 @@
           "minimum": "7.8.0",
           "verified": "8.0.0"
         }
+      },
+      {
+        "id": "sf2e",
+        "type": "system",
+        "compatibility": {
+          "minimum": "1.0.0"
+        }
       }
     ]
   },
