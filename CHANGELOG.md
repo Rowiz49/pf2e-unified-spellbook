@@ -1,3 +1,7 @@
+# 2.2.1
+
+- Updated to v14
+
 # 2.2.0
 
 - Added support for Flexible Spellcasting
