@@ -22,7 +22,6 @@ export function injectSignatureVirtuals(rankMap, collections) {
       continue;
 
     const spells = [...collection.values()];
-    console.log(spells);
     const signatures = spells.filter((s) => s.system.location?.signature);
     if (!signatures.length) continue;
 
