@@ -1,3 +1,7 @@
+# 2.2.2
+
+- The view now shows item quantity for Item spells
+
 # 2.2.1
 
 - Updated to v14
