@@ -175,14 +175,26 @@ function getPreparedSpellsByRank(entry, spellsByRank, spellById) {
  * @param {Actor}   actor          - The character actor, used to read the focus pool for focus entries.
  * @returns {SlotInfo} The slot state object for the template.
  */
-function getSlotInfo(isRegularEntry, rankKey, entry, rankSpells, actor) {
+function getSlotInfo(
+  isRegularEntry,
+  rankKey,
+  entryKey,
+  entry,
+  rankSpells,
+  actor,
+) {
   const isStaff = !!entry.staff;
 
   if (isStaff) {
     return getStaffData(actor, entry);
   }
 
-  if (!isRegularEntry) return { type: "equipment" };
+  if (!isRegularEntry) {
+    const parentItem = getParentItem(actor, entryKey);
+    const quantity = parentItem?.system?.quantity ?? 1;
+
+    return { type: "equipment", quantity, parentItem };
+  }
 
   const slotNum = rankKey === "cantrips" ? 0 : Number.parseInt(rankKey);
   const slot = entry.system.slots[`slot${slotNum}`];
@@ -261,8 +273,7 @@ function getSlotInfo(isRegularEntry, rankKey, entry, rankSpells, actor) {
  * @returns {SpellViewModel[]} The spell view-models ready for the template.
  */
 function buildSpellViewModels(slotInfo, rankSpells, entryKey, rankKey, actor) {
-  const parentItem =
-    slotInfo.type === "equipment" ? getParentItem(actor, entryKey) : null;
+  const parentItem = slotInfo.type === "equipment" ? slotInfo.parentItem : null;
   const isDrawn = parentItem?.system?.equipped?.carryType === "held";
   const slotRank = rankKey === "cantrips" ? 0 : Number.parseInt(rankKey);
 
@@ -357,6 +368,7 @@ export function extractSpells(actor) {
       const slotInfo = getSlotInfo(
         isRegularEntry,
         rankKey,
+        key,
         entry,
         rankSpells,
         actor,
