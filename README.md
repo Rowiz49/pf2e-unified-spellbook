@@ -1,4 +1,4 @@
-![foundry-badge](https://img.shields.io/badge/foundry-v13-informational)
+![foundry-badge](https://img.shields.io/badge/foundry-v14-informational)
 ![Total Downloads](https://img.shields.io/github/downloads/rowiz49/pf2e-unified-spellbook/total?style=for-the-badge)
 ![Latest Version Downloads](https://img.shields.io/github/downloads/rowiz49/pf2e-unified-spellbook/latest/total?style=for-the-badge)
 [![Forge Installs](https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fpf2e-unified-spellbook&colorB=4aa94a)](https://forge-vtt.com/bazaar#package=pf2e-unified-spellbook)
