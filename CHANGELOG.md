@@ -1,3 +1,7 @@
+# 2.2.3
+
+- Added compatibility to the v13 version of SF2e
+
 # 2.2.2
 
 - The view now shows item quantity for Item spells
