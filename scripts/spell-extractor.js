@@ -275,7 +275,11 @@ function getSlotInfo(
 function buildSpellViewModels(slotInfo, rankSpells, entryKey, rankKey, actor) {
   const parentItem = slotInfo.type === "equipment" ? slotInfo.parentItem : null;
   const isDrawn = parentItem?.system?.equipped?.carryType === "held";
-  const slotRank = rankKey === "cantrips" ? 0 : Number.parseInt(rankKey);
+  const slotRank =
+    rankKey === "cantrips"
+      ? getCastRank(rankSpells[0], rankKey)
+      : Number.parseInt(rankKey);
+  console.log(rankSpells);
 
   const toViewModel = (spell, overrides = {}) =>
     buildBaseViewModel(spell, entryKey, rankKey, {
@@ -314,8 +318,7 @@ function buildSpellViewModels(slotInfo, rankSpells, entryKey, rankKey, actor) {
   if (slotInfo.type === "innate") {
     return rankSpells.map((spell) =>
       toViewModel(spell, {
-        castRank:
-          spell.system.location?.heightenedLevel ?? spell.system.level.value,
+        castRank: getCastRank(spell, rankKey),
         expended: spell.system.location?.uses?.value === 0,
       }),
     );
@@ -330,11 +333,24 @@ function buildSpellViewModels(slotInfo, rankSpells, entryKey, rankKey, actor) {
 
   return rankSpells.map((spell) =>
     toViewModel(spell, {
-      castRank:
-        spell.system.location?.heightenedLevel ?? spell.system.level.value,
+      castRank: getCastRank(spell, rankKey),
       expended,
     }),
   );
+}
+
+/**
+ * Gets the cast rank for a spell based on its rank key.
+ * @param {*} spell The spell for which to get the cast rank.
+ * @param {*} rankKey The rank key for the spell.
+ * @returns The cast rank for the spell.
+ */
+function getCastRank(spell, rankKey) {
+  console.log(spell);
+  if (rankKey === "cantrips")
+    // Cantrips use the actor's level divided by 2 rounded down.
+    return Math.ceil(spell.parent.system.details.level.value / 2);
+  return spell.system.location?.heightenedLevel ?? spell.system.level.value;
 }
 
 /**
