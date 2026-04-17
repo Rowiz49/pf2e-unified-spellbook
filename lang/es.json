@@ -7,5 +7,15 @@
   "pf2e-unified-spellbook.Draw": "Sacar",
   "pf2e-unified-spellbook.FocusSpells": "Conjuros de foco",
   "pf2e-unified-spellbook.Cantrips": "Trucos",
-  "pf2e-unified-spellbook.Rank": "Nivel"
+  "pf2e-unified-spellbook.Rank": "Nivel",
+  "pf2e-unified-spellbook.RankOrdinal.1": "1.°",
+  "pf2e-unified-spellbook.RankOrdinal.2": "2.°",
+  "pf2e-unified-spellbook.RankOrdinal.3": "3.°",
+  "pf2e-unified-spellbook.RankOrdinal.4": "4.°",
+  "pf2e-unified-spellbook.RankOrdinal.5": "5.°",
+  "pf2e-unified-spellbook.RankOrdinal.6": "6.°",
+  "pf2e-unified-spellbook.RankOrdinal.7": "7.°",
+  "pf2e-unified-spellbook.RankOrdinal.8": "8.°",
+  "pf2e-unified-spellbook.RankOrdinal.9": "9.°",
+  "pf2e-unified-spellbook.RankOrdinal.10": "10.°"
 }

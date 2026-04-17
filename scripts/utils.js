@@ -35,7 +35,7 @@ export function getActionGlyph(action) {
  * Returns the ordinal string for a given positive integer.
  *
  * @param {number} n - A positive integer (e.g. 1, 2, 3).
- * @returns {string} The number with its ordinal suffix (e.g. "1st", "2nd", "3rd", "4th").
+ * @returns {string} The number with its ordinal suffix localized (e.g. "1st", "2nd", "3rd", "4th").
  *
  * @example
  * getOrdinalLabel(1);  // "1st"
@@ -43,11 +43,8 @@ export function getActionGlyph(action) {
  * getOrdinalLabel(22); // "22nd"
  */
 export function getOrdinalLabel(n) {
-  const s = ["th", "st", "nd", "rd"];
-  const v = n % 100;
-  return `${n}${s[(v - 20) % 10] || s[v] || s[0]}`;
+  return game.i18n.localize(`pf2e-unified-spellbook.RankOrdinal.${n}`);
 }
-
 /**
  * Capitalizes the first character of a string, leaving the rest unchanged.
  *

@@ -7,5 +7,15 @@
   "pf2e-unified-spellbook.Draw": "Tirer",
   "pf2e-unified-spellbook.FocusSpells": "Sorts focalisés",
   "pf2e-unified-spellbook.Cantrips": "Tours de magie",
-  "pf2e-unified-spellbook.Rank": "Rang"
+  "pf2e-unified-spellbook.Rank": "Rang",
+  "pf2e-unified-spellbook.RankOrdinal.1": "1er",
+  "pf2e-unified-spellbook.RankOrdinal.2": "2e",
+  "pf2e-unified-spellbook.RankOrdinal.3": "3e",
+  "pf2e-unified-spellbook.RankOrdinal.4": "4e",
+  "pf2e-unified-spellbook.RankOrdinal.5": "5e",
+  "pf2e-unified-spellbook.RankOrdinal.6": "6e",
+  "pf2e-unified-spellbook.RankOrdinal.7": "7e",
+  "pf2e-unified-spellbook.RankOrdinal.8": "8e",
+  "pf2e-unified-spellbook.RankOrdinal.9": "9e",
+  "pf2e-unified-spellbook.RankOrdinal.10": "10e"
 }
