@@ -1,3 +1,8 @@
+# 2.3.1
+
+- Fixed cantrips not being cast correctly
+- Fixed signature spells not appearing on lower ranks
+
 # 2.3.0
 
 - Added tradition and spellcasting information on the headers
