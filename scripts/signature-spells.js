@@ -39,14 +39,11 @@ export function injectSignatureVirtuals(rankMap, collections) {
  * @param {*} collection The collection this spell belongs to, used to get the entry name for the virtual spell source
  */
 function addVirtualSpell(spell, entry, rankMap, key, collection) {
-  const nativeRank =
-    spell.system.location?.heightenedLevel ?? spell.system.level.value;
-
   const isFlexible = entry.system.prepared.flexible;
 
   for (const [slotKey, slot] of Object.entries(entry.system.slots)) {
     const slotNum = Number.parseInt(slotKey.replace("slot", ""));
-    if (slotNum === 0 || slotNum <= nativeRank || slot.max === 0) continue;
+    if (slotNum === 0 || slot.max === 0) continue;
 
     const rankKey = String(slotNum);
     if (!rankMap.has(rankKey)) continue;
