@@ -346,8 +346,7 @@ function buildSpellViewModels(slotInfo, rankSpells, entryKey, rankKey, actor) {
  * @returns The cast rank for the spell.
  */
 function getCastRank(spell, rankKey) {
-  console.log(spell);
-  if (rankKey === "cantrips")
+  if (rankKey === "cantrips" || rankKey === "focus")
     // Cantrips use the actor's level divided by 2 rounded down.
     return Math.ceil(spell.parent.system.details.level.value / 2);
   return spell.system.location?.heightenedLevel ?? spell.system.level.value;
