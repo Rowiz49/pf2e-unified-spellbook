@@ -382,6 +382,9 @@ export function extractSpells(actor) {
         actor,
       ).sort((a, b) => a.name.localeCompare(b.name));
 
+      const { traditionIcon, tradition, dc, attack, proficiency } =
+        getEntryData(entry);
+
       rankMap.get(rankKey).push({
         entryId: key,
         entryName: collection.name,
@@ -389,10 +392,43 @@ export function extractSpells(actor) {
         slotNum,
         slotInfo,
         spells: spellViewModels,
+        traditionIcon,
+        traditionName: tradition.charAt(0).toUpperCase() + tradition.slice(1),
+        stats: {
+          dc,
+          attack,
+          proficiency,
+        },
       });
     }
   }
 
   injectSignatureVirtuals(rankMap, collections);
   return rankMap;
+}
+/**
+ * Gets the data needed to render the source entry sub-header for a spellcasting entry, including the tradition icon, tradition name, and either DC or attack bonus depending on the entry's statistic.
+ * @param {*} entry The spellcasting entry to extract the data from
+ * @returns The data needed to render the source entry sub-header, including the tradition icon, tradition name, and either DC or attack bonus depending on the entry's statistic.
+ */
+function getEntryData(entry) {
+  let tradition = "arcane";
+  if (!entry.system) tradition = entry.statistic?.label?.toLowerCase();
+  else if (entry.system.tradition?.value)
+    tradition = entry.system.tradition.value;
+  const traditionIcons = {
+    arcane: "fa-book",
+    primal: "fa-seedling",
+    occult: "fa-ghost",
+    divine: "fa-sun",
+  };
+  const traditionIcon = traditionIcons[tradition] || "fa-book";
+
+  const stats = entry.statistic;
+  const dc = stats.dc.value;
+  const attack = stats.check.mod >= 0 ? `+${stats.check.mod}` : stats.check.mod;
+  const proficiency = game.i18n.localize(
+    CONFIG.PF2E.proficiencyLevels[stats.rank],
+  );
+  return { traditionIcon, tradition, dc, attack, proficiency };
 }

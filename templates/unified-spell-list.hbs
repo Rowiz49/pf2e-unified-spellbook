@@ -21,6 +21,7 @@
           data-item-id="{{itemId}}"
           data-group-id="cantrips"
           style="
+            position: relative;
             {{#if @first}}margin-top: 6px;{{/if}}
             background: rgba(0,0,0,0.04);
             border-top: 1px solid var(--color-border-light-tertiary, #ccc);
@@ -32,6 +33,13 @@
           </div>
           <div class="defense">{{localize "pf2e-unified-spellbook.Defense"}}</div>
           <div class="range">{{localize "pf2e-unified-spellbook.Range"}}</div>
+
+          <div class="tradition-badge" 
+              style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); cursor: help; opacity: 0.8;" 
+              data-tooltip="<strong>{{traditionName}} - {{stats.proficiency}} </strong><br/>DC {{stats.dc}} | Attack {{stats.attack}}">
+            <i class="fa-solid {{traditionIcon}}"></i>
+          </div>
+
           <button type="button" class="cast-spell blue invisible">Cast</button>
           <div class="item-controls invisible"></div>
         </li>
@@ -42,6 +50,7 @@
           data-item-id="{{itemId}}"
           data-group-id="{{slotNum}}"
           style="
+            position: relative;
             {{#if @first}}margin-top: 6px;{{/if}}
             background: rgba(0,0,0,0.04);
             border-top: 1px solid var(--color-border-light-tertiary, #ccc);
@@ -120,8 +129,15 @@
             <div class="range">{{localize "pf2e-unified-spellbook.Range"}}</div>
           {{/if}}
 
-          <button type="button" class="cast-spell blue invisible">Cast</button>
-          <div class="item-controls invisible"></div>
+        <div class="tradition-badge" 
+             style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); cursor: help; opacity: 0.8;" 
+             data-tooltip="<strong>{{traditionName}} - {{stats.proficiency}} </strong><br/>DC {{stats.dc}} | Attack {{stats.attack}} ">
+          <i class="fa-solid {{traditionIcon}}"></i>
+        </div>
+
+        <button type="button" class="cast-spell blue invisible">Cast</button>
+        <div class="item-controls invisible"></div>
+
         </li>
         {{/if}}
 
