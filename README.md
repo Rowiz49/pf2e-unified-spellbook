@@ -10,7 +10,8 @@
 Adds a Unified Rank View button to the Known Spells tab that groups all your spells from every spellcasting entry by rank into a single list.
 No more scrolling through separate Arcane, Divine, and Focus sections to find the spell you need, everything is sorted by rank in one place.
 
-The module supports Prepared, Spontaneous, Innate, Focus, Item and Staff (from [PF2e Dailies](https://github.com/reonZ/pf2e-dailies)) spells. The view is read-only, to modify your spellbook you will need to go back to the default view.
+The module supports Prepared, Spontaneous, Innate, Focus, Item and Staff (from [PF2e Dailies](https://github.com/reonZ/pf2e-dailies)) spells.
+The view is intended for normal play, so you can change your spell slots values, your focus points and see the spellcasting information. To add, remove or change your spells, you will need to switch back to the default view.
 
 # Usage
 

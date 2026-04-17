@@ -1,3 +1,8 @@
+# 2.3.0
+
+- Added tradition and spellcasting information on the headers
+- Added localization to rank ordinals
+
 # 2.2.3
 
 - Added compatibility to the v13 version of SF2e
