@@ -279,7 +279,6 @@ function buildSpellViewModels(slotInfo, rankSpells, entryKey, rankKey, actor) {
     rankKey === "cantrips"
       ? getCastRank(rankSpells[0], rankKey)
       : Number.parseInt(rankKey);
-  console.log(rankSpells);
 
   const toViewModel = (spell, overrides = {}) =>
     buildBaseViewModel(spell, entryKey, rankKey, {

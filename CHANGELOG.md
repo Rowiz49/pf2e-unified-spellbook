@@ -1,3 +1,7 @@
+# 2.3.2
+
+- Fixed signature spell sorting and rank handling
+
 # 2.3.1
 
 - Fixed cantrips not being cast correctly

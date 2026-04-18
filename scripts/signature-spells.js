@@ -40,10 +40,19 @@ export function injectSignatureVirtuals(rankMap, collections) {
  */
 function addVirtualSpell(spell, entry, rankMap, key, collection) {
   const isFlexible = entry.system.prepared.flexible;
-
+  const originalRank = spell.system.level.value;
+  const originalLocationRank =
+    spell.system.location?.heightenedLevel ?? originalRank;
+  console.log(spell.system, { originalRank, originalLocationRank }); // DEBUG
   for (const [slotKey, slot] of Object.entries(entry.system.slots)) {
     const slotNum = Number.parseInt(slotKey.replace("slot", ""));
-    if (slotNum === 0 || slot.max === 0) continue;
+    if (
+      slotNum === 0 ||
+      slotNum < originalRank ||
+      slotNum == originalLocationRank ||
+      slot.max === 0
+    )
+      continue;
 
     const rankKey = String(slotNum);
     if (!rankMap.has(rankKey)) continue;
@@ -62,8 +71,9 @@ function addVirtualSpell(spell, entry, rankMap, key, collection) {
 
     if (existingSource) {
       existingSource.spells.push(virtualVm);
+
+      sortVirtualsInPlace(existingSource.spells);
     } else {
-      // Entry has slots at this rank but no native spells here yet
       sources.push({
         entryId: key,
         entryName: collection.name,
@@ -76,6 +86,28 @@ function addVirtualSpell(spell, entry, rankMap, key, collection) {
         },
         spells: [virtualVm],
       });
+    }
+  }
+}
+
+/**
+ * Sorts virtual spells in place while maintaining the order of non-virtual spells.
+ * @param {SpellViewModel[]} spells - The array of spell view models to sort.
+ */
+function sortVirtualsInPlace(spells) {
+  // Extract virtual spells
+  const virtuals = spells.filter((s) => s.isVirtual);
+
+  // Sort only the virtuals
+  virtuals.sort((a, b) =>
+    a.name.localeCompare(b.name, undefined, { sensitivity: "base" }),
+  );
+
+  // Reinsert them into their original positions
+  let vIndex = 0;
+  for (let i = 0; i < spells.length; i++) {
+    if (spells[i].isVirtual) {
+      spells[i] = virtuals[vIndex++];
     }
   }
 }
