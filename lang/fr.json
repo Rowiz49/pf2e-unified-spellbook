@@ -1,4 +1,6 @@
 {
+  "pf2e-unified-spellbook.UnifiedView": "Vue Unifiée",
+  "pf2e-unified-spellbook.DefaultView": "Vue par Défaut",
   "pf2e-unified-spellbook.Defense": "Défense",
   "pf2e-unified-spellbook.Range": "Portée",
   "pf2e-unified-spellbook.Uses": "Utilisations",

@@ -375,6 +375,8 @@ export function extractSpells(actor) {
     const spells = [...collection.values()];
     const isRegularEntry = !!entry.system;
     const spellsByRank = getSpellsByRank(spells, entry);
+    const { traditionIcon, tradition, dc, attack, proficiency } =
+      getEntryData(entry);
 
     for (const [rankKey, rankSpells] of spellsByRank) {
       if (!rankMap.has(rankKey)) rankMap.set(rankKey, []);
@@ -395,9 +397,6 @@ export function extractSpells(actor) {
         rankKey,
         actor,
       ).sort((a, b) => a.name.localeCompare(b.name));
-
-      const { traditionIcon, tradition, dc, attack, proficiency } =
-        getEntryData(entry);
 
       rankMap.get(rankKey).push({
         entryId: key,
@@ -427,12 +426,12 @@ export function extractSpells(actor) {
  */
 function getEntryData(entry) {
   let tradition = "arcane";
-  if (!entry.system) tradition = entry.statistic?.label?.toLowerCase();
+  if (!entry.system) tradition = entry.tradition;
   else if (entry.system.tradition?.value)
     tradition = entry.system.tradition.value;
   const traditionIcons = {
     arcane: "fa-book",
-    primal: "fa-seedling",
+    primal: "fa-leaf",
     occult: "fa-ghost",
     divine: "fa-sun",
   };

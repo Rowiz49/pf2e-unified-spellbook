@@ -1,6 +1,7 @@
 import { extractSpells } from "./spell-extractor.js";
 import { registerEventListeners } from "./spell-slot-listeners.js";
 import { getOrdinalLabel } from "./utils.js";
+import { addSettings } from "./settings.js";
 /** Path to the Handlebars template used to render the unified spell list. */
 const TEMPLATE_PATH =
   "modules/pf2e-unified-spellbook/templates/unified-spell-list.hbs";
@@ -8,6 +9,7 @@ const TEMPLATE_PATH =
 /** Actor flag scope and key used to persist the active view. */
 const FLAG_SCOPE = "pf2e-unified-spellbook";
 const FLAG_KEY = "unifiedView";
+const MODULE_ID = "pf2e-unified-spellbook";
 
 // ---------------------------------------------------------------------------
 // Handlebars helpers
@@ -58,11 +60,15 @@ async function onRenderCreatureSheet(sheet, html) {
   if (actor?.type !== "character") return;
 
   const rankMap = extractSpells(actor);
+  const showFocusSpellsOnBottom = game.settings.get(
+    MODULE_ID,
+    "showFocusSpellsOnBottom",
+  );
 
-  // Sort: focus first, then cantrips, then ascending numerically.
+  // Sort: cantrips first, then numeric ranks, then optional focus at top or bottom.
   const sortedRanks = [...rankMap.keys()].sort((a, b) => {
-    if (a === "focus") return -1;
-    if (b === "focus") return 1;
+    if (a === "focus") return showFocusSpellsOnBottom ? 1 : -1;
+    if (b === "focus") return showFocusSpellsOnBottom ? -1 : 1;
     if (a === "cantrips") return -1;
     if (b === "cantrips") return 1;
     return Number.parseInt(a) - Number.parseInt(b);
@@ -119,7 +125,7 @@ async function onRenderCreatureSheet(sheet, html) {
       padding: 4px 8px; font-size: 0.85em;
     ">
       <i class="fa-solid ${unified ? "fa-list" : "fa-book"}"></i>
-      <span>${unified ? "Default View" : "Unified Rank View"}</span>
+      <span>${unified ? game.i18n.localize("pf2e-unified-spellbook.DefaultView") : game.i18n.localize("pf2e-unified-spellbook.UnifiedView")}</span>
     </button>
   `);
 
@@ -146,4 +152,7 @@ async function onRenderCreatureSheet(sheet, html) {
 // ---------------------------------------------------------------------------
 
 registerHelpers();
+Hooks.once("init", () => {
+  addSettings(MODULE_ID);
+});
 Hooks.on("renderActorSheetPF2e", onRenderCreatureSheet);
