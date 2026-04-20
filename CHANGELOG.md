@@ -1,3 +1,9 @@
+# 2.3.3
+
+- Fixed some stability issues
+- Added a setting to select if you want focus spells to appear at the top or the bottom of the spell sheet.
+- Added localization for the view toggle button
+
 # 2.3.2
 
 - Fixed signature spell sorting and rank handling
