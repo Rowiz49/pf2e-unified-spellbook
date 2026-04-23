@@ -1,7 +1,7 @@
 # 2.4.0
 
 - Moved focus pool to the Rank header
-- Added a badge to show which focus spells are cantrip
+- Added a badge to show which focus spells are cantrips
 
 # 2.3.3
 
