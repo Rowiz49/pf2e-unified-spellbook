@@ -109,7 +109,6 @@ async function onRenderCreatureSheet(sheet, html) {
     templateData,
   );
   const unifiedEl = $(renderedHtml);
-
   const knownSpellsTab = html.find(".tab.known-spells");
   const defaultList = knownSpellsTab.find("ol.spellcastingEntry-list").first();
   const addEntryBtn = knownSpellsTab.find(

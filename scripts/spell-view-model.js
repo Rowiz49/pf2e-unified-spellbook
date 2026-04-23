@@ -30,6 +30,8 @@ export function buildBaseViewModel(spell, entryKey, rankKey, overrides = {}) {
     isFlexible: false,
     isAnimistVesselSpell: false,
     isPrimaryAnimistVesselSpell: false,
+    isFocusCantrip:
+      spell.system?.traits?.value?.includes("cantrip") && rankKey === "focus",
     ...overrides,
   };
 }

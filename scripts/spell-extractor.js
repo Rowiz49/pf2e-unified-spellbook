@@ -396,7 +396,11 @@ export function extractSpells(actor) {
         key,
         rankKey,
         actor,
-      ).sort((a, b) => a.name.localeCompare(b.name));
+      ).sort((a, b) => {
+        const cantripDiff =
+          (b.isFocusCantrip ? 1 : 0) - (a.isFocusCantrip ? 1 : 0);
+        return cantripDiff === 0 ? a.name.localeCompare(b.name) : cantripDiff;
+      });
 
       rankMap.get(rankKey).push({
         entryId: key,

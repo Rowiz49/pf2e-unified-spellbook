@@ -1,53 +1,87 @@
 <ol class="spellcastingEntry-list directory-list unified-spell-list" style="display:none; margin-bottom:8px;">
 
-  {{!-- ─── RANK GROUPS ─────────────────────────────────────────────── --}}
   {{#each ranks}}
   <li class="item item-container spellcasting-entry">
 
-    <div class="action-header">
+    {{!-- ─── RANK HEADER ──────────────────────────────────────────────── --}}
+    <div class="action-header" style="display: flex; align-items: center; justify-content: space-between;">
       <h3 class="item-name">
         <span style="padding: 0 8px;">{{rankLabel}}</span>
       </h3>
+      {{!-- Focus pool: compact, right-aligned ─────────────────────────── --}}
+      {{#if isFocus}}
+      <section class="focus-pool"
+        data-action="adjust-resource"
+        data-resource="focus"
+        style="cursor: pointer; display: flex; align-items: center; gap: 4px; font-size: 0.9em; font-weight: 500; opacity: 0.9; padding-right: 8px; white-space: nowrap; flex-shrink: 0;"
+        title="PF2E.Focus.Pool"
+      >
+        <span style="color: white; font-weight: 700; margin-right: 2px;">{{localize "PF2E.Focus.Pool"}}</span>
+        {{#each focusSlots}}
+          <i class="{{#if expended}}fa-regular fa-circle{{else}}fa-solid fa-circle-dot{{/if}}" style="font-size: 0.9em; color: white;"></i>
+        {{/each}}
+      </section>
+      {{/if}}
     </div>
 
-    {{#if isFocus}}
-      <section class="focus-pool" data-action="adjust-resource" data-resource="focus" style="cursor: pointer; display: flex; align-items: center; justify-content: space-between; margin-top: 4px;">
-        <span class="pips">
-          {{#each focusSlots}}
-            <i class="{{#if expended}}fa-regular fa-circle{{else}}fa-solid fa-circle-dot{{/if}}"></i>
-          {{/each}}
-        </span>
-        <h4 style="margin:0;margin-left: 2px;">Focus Pool</h4>
-      </section>
-    {{/if}}
-
+    {{!-- ─── SPELL LIST ───────────────────────────────────────────────── --}}
     <ol class="spell-list">
 
-      {{!-- ─── SOURCE HEADERS ───────────────────────────────────────── --}}
       {{#each sources}}
 
-        {{!-- Cantrip header (no slot info needed) --}}
-        {{#if ../isCantrip}}
+        {{!-- ─── SOURCE HEADER ROW ──────────────────────────────────────── --}}
         <li class="header-row"
           data-item-id="{{itemId}}"
-          data-group-id="cantrips"
-          style="
-            position: relative;
-            {{#if @first}}margin-top: 6px;{{/if}}
-            background: rgba(0,0,0,0.04);
-            border-top: 1px solid var(--color-border-light-tertiary, #ccc);
-            border-bottom: 1px solid var(--color-border-light-tertiary, #ccc);
-          "
+          data-group-id="{{#if ../isCantrip}}cantrips{{else}}{{slotNum}}{{/if}}"
+          style="position: relative;{{#if @first}} margin-top: 6px;{{/if}} background: rgba(0,0,0,0.04); border-top: 1px solid var(--color-border-light-tertiary, #ccc); border-bottom: 1px solid var(--color-border-light-tertiary, #ccc);"
         >
           <div class="item-name" style="gap: 6px;">
             <h3 style="font-size: 0.82em; opacity: 0.75; margin: 0;">{{entryName}}</h3>
-          </div>
-          <div class="defense">{{localize "pf2e-unified-spellbook.Defense"}}</div>
-          <div class="range">{{localize "pf2e-unified-spellbook.Range"}}</div>
 
-          <div class="tradition-badge" 
-              style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); cursor: help; opacity: 0.8;" 
-              data-tooltip="<strong>{{traditionName}} - {{stats.proficiency}} </strong><br/>DC {{stats.dc}} | Attack {{stats.attack}}">
+            {{!-- Slot info (non-cantrip only) ───────────────────────────── --}}
+            {{#unless ../isCantrip}}
+
+              {{#if (unifiedEq slotInfo.type "spontaneous")}}
+                <span class="spell-slots-input">
+                  <input type="number" data-item-id="{{itemId}}" data-item-property="system.slots.slot{{slotNum}}.value" value="{{slotInfo.current}}" placeholder="0" />
+                </span>
+                <span class="slash">/</span>
+                <span class="spell-max-input">
+                  <input type="number" data-item-id="{{itemId}}" data-item-property="system.slots.slot{{slotNum}}.max" value="{{slotInfo.max}}" placeholder="0" />
+                </span>
+                <a data-action="reset-spell-slots"><i class="fa-solid fa-arrow-rotate-right"></i></a>
+              {{/if}}
+
+              {{#if (unifiedEq slotInfo.type "equipment")}}
+                <span style="font-size: 0.9em; opacity: 0.65;">
+                  {{localize "pf2e-unified-spellbook.Item"}} x{{slotInfo.quantity}}
+                </span>
+              {{/if}}
+
+              {{#if (unifiedEq slotInfo.type "staff")}}
+                <div class="pf2e-dailies-charges">
+                  <input type="number" data-action="change-charges-unified" min="0" max="{{slotInfo.max}}" value="{{slotInfo.current}}" step="1" />
+                  <a data-action="reset-charges-unified"><i class="fas fa-redo"></i></a>
+                </div>
+              {{/if}}
+
+            {{/unless}}
+          </div>
+
+          <div class="defense">{{localize "pf2e-unified-spellbook.Defense"}}</div>
+
+          {{!-- Column header: "Uses" for innate, "Range" for all others ── --}}
+          {{#if (unifiedEq slotInfo.type "innate")}}
+            <div class="uses">{{localize "pf2e-unified-spellbook.Uses"}}</div>
+          {{else}}
+            <div class="range">{{localize "pf2e-unified-spellbook.Range"}}</div>
+          {{/if}}
+
+          {{!-- Tradition badge ─────────────────────────────────────────── --}}
+          <div class="tradition-badge"
+            style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); cursor: help; opacity: 0.8;"
+            data-tooltip="<strong>{{traditionName}} - {{stats.proficiency}}</strong><br/>DC {{stats.dc}} | Attack {{stats.attack}}"
+          >
             <i class="fa-solid {{traditionIcon}}"></i>
           </div>
 
@@ -55,97 +89,11 @@
           <div class="item-controls invisible"></div>
         </li>
 
-        {{!-- Spell rank header (with slot info depending on entry type) --}}
-        {{else}}
-        <li class="header-row"
-          data-item-id="{{itemId}}"
-          data-group-id="{{slotNum}}"
-          style="
-            position: relative;
-            {{#if @first}}margin-top: 6px;{{/if}}
-            background: rgba(0,0,0,0.04);
-            border-top: 1px solid var(--color-border-light-tertiary, #ccc);
-            border-bottom: 1px solid var(--color-border-light-tertiary, #ccc);
-          "
-        >
-          <div class="item-name" style="gap: 6px;">
-            <h3 style="font-size: 0.82em; opacity: 0.75; margin: 0;">{{entryName}}</h3>
-
-            {{!-- Spontaneous: editable current / max slots --}}
-            {{#if (unifiedEq slotInfo.type "spontaneous")}}
-              <span class="spell-slots-input">
-                <input type="number"
-                  data-item-id="{{itemId}}"
-                  data-item-property="system.slots.slot{{slotNum}}.value"
-                  value="{{slotInfo.current}}"
-                  placeholder="0"
-                />
-              </span>
-              <span class="slash">/</span>
-              <span class="spell-max-input">
-                <input type="number"
-                  data-item-id="{{itemId}}"
-                  data-item-property="system.slots.slot{{slotNum}}.max"
-                  value="{{slotInfo.max}}"
-                  placeholder="0"
-                />
-              </span>
-              <a data-action="reset-spell-slots">
-                <i class="fa-solid fa-arrow-rotate-right"></i>
-              </a>
-            {{/if}}
-
-            {{!-- Equipment: static label --}}
-            {{#if (unifiedEq slotInfo.type "equipment")}}
-              <span style="font-size: 0.9em; opacity: 0.65;">
-                {{localize "pf2e-unified-spellbook.Item"}} x{{slotInfo.quantity}}
-              </span>
-            {{/if}}
-
-            {{!-- Staff (pf2e-dailies): charge input + reset --}}
-            {{#if (unifiedEq slotInfo.type "staff")}}
-              <div class="pf2e-dailies-charges">
-                <input type="number"
-                  data-action="change-charges-unified"
-                  min="0"
-                  max="{{slotInfo.max}}"
-                  value="{{slotInfo.current}}"
-                  step="1"
-                />
-                <a data-action="reset-charges-unified">
-                  <i class="fas fa-redo"></i>
-                </a>
-              </div>
-            {{/if}}
-
-          </div>
-
-          <div class="defense">{{localize "pf2e-unified-spellbook.Defense"}}</div>
-
-          {{!-- Innate spells show "Uses" instead of "Range" in the column header --}}
-          {{#if (unifiedEq slotInfo.type "innate")}}
-            <div class="range">{{localize "pf2e-unified-spellbook.Uses"}}</div>
-          {{else}}
-            <div class="range">{{localize "pf2e-unified-spellbook.Range"}}</div>
-          {{/if}}
-
-        <div class="tradition-badge" 
-             style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); cursor: help; opacity: 0.8;" 
-             data-tooltip="<strong>{{traditionName}} - {{stats.proficiency}} </strong><br/>DC {{stats.dc}} | Attack {{stats.attack}} ">
-          <i class="fa-solid {{traditionIcon}}"></i>
-        </div>
-
-        <button type="button" class="cast-spell blue invisible">Cast</button>
-        <div class="item-controls invisible"></div>
-
-        </li>
-        {{/if}}
-
-        {{!-- ─── SPELL ROWS ─────────────────────────────────────────── --}}
+        {{!-- ─── SPELL ROWS ──────────────────────────────────────────────── --}}
         {{#each spells}}
         <li
           class="spell{{#if isVirtual}} virtual{{/if}}"
-          style="{{#if (unifiedAnd isVirtual (unifiedNot isFlexible))}} background: rgba(50, 100, 200, 0.08);{{/if}}"
+          style="{{#if (unifiedAnd isVirtual (unifiedNot isFlexible))}}background: rgba(50, 100, 200, 0.08);{{/if}}"
           data-item-type="{{#if isVirtual}}spell-slot-group{{else}}spell{{/if}}"
           data-item-id="{{_id}}"
           data-entry-id="{{entryId}}"
@@ -154,8 +102,7 @@
           {{#if slotId}}data-slot-id="{{slotId}}"{{/if}}
           {{#if (unifiedOr expended (unifiedAnd isAnimistVesselSpell (unifiedNot isPrimaryAnimistVesselSpell)))}}data-slot-expended=""{{/if}}
         >
-
-          {{!-- Spell name + icon --}}
+          {{!-- Spell name + icon ────────────────────────────────────────── --}}
           <div class="item-name{{#unless isVirtual}} drag-handle{{/unless}}"
             {{#unless isVirtual}}data-drag-handle=""{{/unless}}>
             <a class="item-image framed" data-action="item-to-chat">
@@ -165,62 +112,49 @@
             <h4 class="name">
               <a data-action="toggle-summary">{{name}}</a>
               <span class="action-glyph">{{actions}}</span>
+              {{#if isFocusCantrip}}
+                <span style="font-size: 0.65em; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; background: var(--color-background-info); color: var(--color-text-info); border: 1px solid rgba(0, 0, 0, 0.2); border-radius: 3px; padding: 1px 5px; vertical-align: middle;">Cantrip</span>
+              {{/if}}
             </h4>
           </div>
 
           <div class="defense">{{defense}}</div>
 
-          {{!-- Range / Uses column --}}
-          {{#if hasUses}}
-            {{!-- Cantrips don't track uses, just show range --}}
-            {{#if (unifiedEq groupId "cantrips")}}
-              <div class="range">{{range}}</div>
-            {{else}}
-              {{!-- Innate / limited-use spells: editable uses with reset --}}
-              <div class="uses" style="margin-right: 16px;">
-                <input type="number"
-                  data-item-id="{{_id}}"
-                  data-item-property="system.location.uses.value"
-                  value="{{uses.value}}"
-                  placeholder="0"
-                />
-                <span class="slash">/</span>
-                  <input type="number"
-                  data-item-id="{{_id}}"
-                  data-item-property="system.location.uses.max"
-                  value="{{uses.max}}"
-                  placeholder="0"
-                />
-                <a data-action="reset-spell-slots" data-tooltip="Reset Uses">
-                  <i class="fa-solid fa-arrow-rotate-right"></i>
-                </a>
-              </div>
-            {{/if}}
+          {{!-- Range / Uses column ────────────────────────────────────────── --}}
+          {{#if (unifiedAnd hasUses (unifiedNot (unifiedEq groupId "cantrips")))}}
+            <div class="uses">
+              <span class="spell-slots-input">
+                <input type="number" data-item-id="{{_id}}" data-item-property="system.location.uses.value" value="{{uses.value}}" placeholder="0" />
+              </span>
+              <span class="slash"> / </span>
+              <span class="spell-max-input">
+                <input type="number" data-item-id="{{_id}}" data-item-property="system.location.uses.max" value="{{uses.max}}" placeholder="0" />
+              </span>
+            </div>
           {{else}}
             <div class="range">{{range}}</div>
           {{/if}}
 
-          {{!-- Cast / Draw button --}}
+          {{!-- Cast / Draw button ─────────────────────────────────────────── --}}
           {{#if isItem}}
-            {{#if isDrawn}}
-              <button type="button" class="cast-spell blue" data-action="cast-spell">Cast</button>
-            {{else}}
-              <button type="button" class="cast-spell blue" data-action="draw-item" data-item-id="{{itemId}}">
-                {{localize "pf2e-unified-spellbook.Draw"}}
-              </button>
-            {{/if}}
+            <button type="button" class="cast-spell blue" data-action="{{#if isDrawn}}cast-spell{{else}}draw-item{{/if}}" {{#unless isDrawn}}data-item-id="{{itemId}}"{{/unless}}>
+              {{#if isDrawn}}Cast{{else}}{{localize "pf2e-unified-spellbook.Draw"}}{{/if}}
+            </button>
           {{else}}
-            
-              <button type="button" class="cast-spell blue {{#if (unifiedAnd isAnimistVesselSpell (unifiedNot isPrimaryAnimistVesselSpell))}} inactive {{/if}}" data-action="cast-spell" >
-                {{localize "pf2e-unified-spellbook.Cast"}}
-              </button>
+            <button type="button" class="cast-spell blue{{#if (unifiedAnd isAnimistVesselSpell (unifiedNot isPrimaryAnimistVesselSpell))}} inactive{{/if}}" data-action="cast-spell">
+              {{localize "pf2e-unified-spellbook.Cast"}}
+            </button>
           {{/if}}
 
-          {{!-- Item controls (edit, delete, signature, expend) --}}
+          {{!-- Item controls ──────────────────────────────────────────────── --}}
           <div class="item-controls">
+
             {{#if (unifiedAnd isAnimistVesselSpell (unifiedNot isPrimaryAnimistVesselSpell))}}
-            <a data-action="dailies-retrain-unified" data-retrain-type="vessel" data-tooltip="Exchange Primary Vessel"><i class="fa-solid fa-retweet" style=""></i></a>
+              <a data-action="dailies-retrain-unified" data-retrain-type="vessel" data-tooltip="Exchange Primary Vessel">
+                <i class="fa-solid fa-retweet"></i>
+              </a>
             {{/if}}
+
             {{#unless (unifiedOr (unifiedEq groupId "cantrips") isFlexible)}}
               {{#if (unifiedEq prepType "spontaneous")}}
                 <a data-action="toggle-signature-spell" data-tooltip="PF2E.ToggleSignatureSpellTitle">
@@ -233,27 +167,25 @@
                 </a>
               {{/if}}
             {{/unless}}
+
+            {{#if (unifiedAnd hasUses (unifiedNot (unifiedEq groupId "cantrips")))}}
+              <a data-action="reset-spell-slots" data-tooltip="{{localize "pf2e-unified-spellbook.ResetSpellSlots"}}"><i class="fa-solid fa-arrow-rotate-right"></i></a>
+            {{/if}}
             {{#unless isVirtual}}
-              <a data-action="edit-item" data-tooltip="PF2E.EditItemTitle">
-                <i class="fa-solid fa-fw fa-edit"></i>
-              </a>
-              <a data-action="delete-item" data-tooltip="PF2E.DeleteItemTitle">
-                <i class="fa-solid fa-fw fa-trash"></i>
-              </a>
+              <a data-action="edit-item" data-tooltip="PF2E.EditItemTitle"><i class="fa-solid fa-fw fa-edit"></i></a>
+              <a data-action="delete-item" data-tooltip="PF2E.DeleteItemTitle"><i class="fa-solid fa-fw fa-trash"></i></a>
             {{/unless}}
+
           </div>
 
           <div class="item-summary" hidden=""></div>
         </li>
-        {{/each}}
-        {{!-- end spells --}}
+        {{/each}}{{!-- end spells --}}
 
-      {{/each}}
-      {{!-- end sources --}}
+      {{/each}}{{!-- end sources --}}
 
     </ol>
   </li>
-  {{/each}}
-  {{!-- end ranks --}}
+  {{/each}}{{!-- end ranks --}}
 
 </ol>
