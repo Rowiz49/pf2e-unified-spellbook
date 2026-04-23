@@ -96,6 +96,7 @@ async function onRenderCreatureSheet(sheet, html) {
         rankKey,
         rankLabel,
         isCantrip: rankKey === "cantrips",
+        isFocus: rankKey === "focus",
         sources,
         focusSlots,
       };

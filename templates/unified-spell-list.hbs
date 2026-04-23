@@ -10,6 +10,17 @@
       </h3>
     </div>
 
+    {{#if isFocus}}
+      <section class="focus-pool" data-action="adjust-resource" data-resource="focus" style="cursor: pointer; display: flex; align-items: center; justify-content: space-between; margin-top: 4px;">
+        <span class="pips">
+          {{#each focusSlots}}
+            <i class="{{#if expended}}fa-regular fa-circle{{else}}fa-solid fa-circle-dot{{/if}}"></i>
+          {{/each}}
+        </span>
+        <h4 style="margin:0;margin-left: 2px;">Focus Pool</h4>
+      </section>
+    {{/if}}
+
     <ol class="spell-list">
 
       {{!-- ─── SOURCE HEADERS ───────────────────────────────────────── --}}
@@ -84,20 +95,9 @@
               </a>
             {{/if}}
 
-            {{!-- Focus: pip display, click/right-click to adjust --}}
-            {{#if (unifiedEq slotInfo.type "focus")}}
-              <section class="focus-pool" data-action="adjust-resource" data-resource="focus" style="cursor: pointer;">
-                <span class="pips">
-                  {{#each slotInfo.slots}}
-                    <i class="{{#if expended}}fa-regular fa-circle{{else}}fa-solid fa-circle-dot{{/if}}"></i>
-                  {{/each}}
-                </span>
-              </section>
-            {{/if}}
-
             {{!-- Equipment: static label --}}
             {{#if (unifiedEq slotInfo.type "equipment")}}
-              <span style="font-size: 0.78em; opacity: 0.65;">
+              <span style="font-size: 0.9em; opacity: 0.65;">
                 {{localize "pf2e-unified-spellbook.Item"}} x{{slotInfo.quantity}}
               </span>
             {{/if}}
