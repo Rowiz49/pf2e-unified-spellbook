@@ -333,7 +333,7 @@ function buildSpellViewModels(slotInfo, rankSpells, entryKey, rankKey, actor) {
   return rankSpells.map((spell) =>
     toViewModel(spell, {
       castRank: getCastRank(spell, rankKey),
-      expended,
+      expended: expended && !spell.system.traits.value.includes("cantrip"),
     }),
   );
 }
@@ -405,6 +405,10 @@ export function extractSpells(actor) {
       rankMap.get(rankKey).push({
         entryId: key,
         entryName: collection.name,
+        entryDataStatistic:
+          collection.name.toLowerCase().replaceAll(" ", "-") +
+          "-" +
+          "spellcasting",
         itemId: entry?._id ?? null,
         slotNum,
         slotInfo,
