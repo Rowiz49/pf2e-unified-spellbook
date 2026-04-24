@@ -1,3 +1,8 @@
+# 2.5.0
+
+- Make focus cantrips never be expended
+- Add Spell Attack Roll button to the entry headers
+
 # 2.4.0
 
 - Moved focus pool to the Rank header
