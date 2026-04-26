@@ -1,3 +1,7 @@
+# 2.5.1
+
+- Added Chinese Location (Thanks @AlphaStarguide!)
+
 # 2.5.0
 
 - Make focus cantrips never be expended
