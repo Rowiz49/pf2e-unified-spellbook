@@ -1,6 +1,6 @@
 # 2.5.1
 
-- Added Chinese Location (Thanks @AlphaStarguide!)
+- Added Chinese localization (Thanks @AlphaStarguide!)
 
 # 2.5.0
 
