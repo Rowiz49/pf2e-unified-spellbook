@@ -23,6 +23,6 @@
   "pf2e-unified-spellbook.RankOrdinal.10": "10.°",
   "pf2e-unified-spellbook.ShowFocusSpellsOnBottom": "Mostrar conjuros de foco al final de la lista",
   "pf2e-unified-spellbook.ShowFocusSpellsOnBottomHint": "Cuando está activado, los conjuros de foco se mostrarán al final de la lista de conjuros",
-  "pf2e-unified-spellbook.Defense.AC": "CA",
-  "pf2e-unified-spellbook.Defense.Basic": "{statistic} básico"
+  "pf2e-unified-spellbook.SpellDefense.AC": "CA",
+  "pf2e-unified-spellbook.SpellDefense.Basic": "{statistic} básico"
 }

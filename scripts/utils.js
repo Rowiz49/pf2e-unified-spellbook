@@ -75,14 +75,16 @@ export function getDefense(spell) {
   const save = spell.system.defense?.save;
   if (!save) {
     return spell.system.traits.value.includes("attack")
-      ? game.i18n.localize("pf2e-unified-spellbook.Defense.AC")
+      ? game.i18n.localize("pf2e-unified-spellbook.SpellDefense.AC")
       : "";
   }
 
   const statistic = capitalize(save.statistic);
 
   return save.basic
-    ? game.i18n.format("pf2e-unified-spellbook.Defense.Basic", { statistic })
+    ? game.i18n.format("pf2e-unified-spellbook.SpellDefense.Basic", {
+        statistic,
+      })
     : statistic;
 }
 /**

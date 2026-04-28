@@ -23,6 +23,6 @@
   "pf2e-unified-spellbook.RankOrdinal.10": "10°",
   "pf2e-unified-spellbook.ShowFocusSpellsOnBottom": "Mostra gli incantesimi di focus in fondo all'elenco",
   "pf2e-unified-spellbook.ShowFocusSpellsOnBottomHint": "Quando attivato, gli incantesimi di focus verranno mostrati in fondo all'elenco degli incantesimi",
-  "pf2e-unified-spellbook.Defense.AC": "CA",
-  "pf2e-unified-spellbook.Defense.Basic": "base {statistic}"
+  "pf2e-unified-spellbook.SpellDefense.AC": "CA",
+  "pf2e-unified-spellbook.SpellDefense.Basic": "base {statistic}"
 }
