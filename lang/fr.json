@@ -20,5 +20,7 @@
   "pf2e-unified-spellbook.RankOrdinal.7": "7e",
   "pf2e-unified-spellbook.RankOrdinal.8": "8e",
   "pf2e-unified-spellbook.RankOrdinal.9": "9e",
-  "pf2e-unified-spellbook.RankOrdinal.10": "10e"
+  "pf2e-unified-spellbook.RankOrdinal.10": "10e",
+  "pf2e-unified-spellbook.ShowFocusSpellsOnBottom": "Afficher les sorts focalisés à la fin de la liste",
+  "pf2e-unified-spellbook.ShowFocusSpellsOnBottomHint": "Lorsqu'elle est activée, les sorts focalisés seront affichés à la fin de la liste des sorts"
 }
