@@ -22,5 +22,7 @@
   "pf2e-unified-spellbook.RankOrdinal.9": "9e",
   "pf2e-unified-spellbook.RankOrdinal.10": "10e",
   "pf2e-unified-spellbook.ShowFocusSpellsOnBottom": "Afficher les sorts focalisés à la fin de la liste",
-  "pf2e-unified-spellbook.ShowFocusSpellsOnBottomHint": "Lorsqu'elle est activée, les sorts focalisés seront affichés à la fin de la liste des sorts"
+  "pf2e-unified-spellbook.ShowFocusSpellsOnBottomHint": "Lorsqu'elle est activée, les sorts focalisés seront affichés à la fin de la liste des sorts",
+  "pf2e-unified-spellbook.Defense.AC": "CA",
+  "pf2e-unified-spellbook.Defense.Basic": "basic {statistic}"
 }

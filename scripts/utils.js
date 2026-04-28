@@ -73,12 +73,18 @@ export function capitalize(str) {
  */
 export function getDefense(spell) {
   const save = spell.system.defense?.save;
-  if (!save) return spell.system.traits.value.includes("attack") ? "AC" : "";
-  return save.basic
-    ? `basic ${capitalize(save.statistic)}`
-    : capitalize(save.statistic);
-}
+  if (!save) {
+    return spell.system.traits.value.includes("attack")
+      ? game.i18n.localize("pf2e-unified-spellbook.Defense.AC")
+      : "";
+  }
 
+  const statistic = capitalize(save.statistic);
+
+  return save.basic
+    ? game.i18n.format("pf2e-unified-spellbook.Defense.Basic", { statistic })
+    : statistic;
+}
 /**
  * Gets parent item for item spells
  * @param {Actor} actor
