@@ -1,11 +1,15 @@
 # 2.5.2
 
+- Updated Chinese localization (Thanks [@AlphaStarguide](https://github.com/AlphaStarguide)!)
+
+# 2.5.2
+
 - Added italian localization.
 - Expand localization to cover the whole module.
 
 # 2.5.1
 
-- Added Chinese localization (Thanks @AlphaStarguide!)
+- Added Chinese localization (Thanks [@AlphaStarguide](https://github.com/AlphaStarguide)!)
 
 # 2.5.0
 
