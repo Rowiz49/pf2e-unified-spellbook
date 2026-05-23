@@ -330,6 +330,16 @@ function buildSpellViewModels(slotInfo, rankSpells, entryKey, rankKey, actor) {
       (slotInfo.type === "staff" && slotInfo.current === 0) ||
       (slotInfo.type === "equipment" && parentItem?.system?.uses?.value === 0));
 
+  // If this is a flexible prepared entry, filter the spells based on the signature flag
+  // of the slot, since the signature flag indicates whether a spell has been prepared.
+  if (slotInfo.isFlexible && rankKey !== "cantrips") {
+    console.log(rankSpells, entryKey);
+    rankSpells = rankSpells.filter((spell) => {
+      return spell.system.location.signature;
+    });
+    console.log(rankSpells, entryKey);
+  }
+
   return rankSpells.map((spell) =>
     toViewModel(spell, {
       castRank: getCastRank(spell, rankKey),

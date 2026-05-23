@@ -1,3 +1,7 @@
+# 2.5.3
+
+- Fix an issue where all spells in a flexible spellcasting entry were being shown.
+
 # 2.5.2
 
 - Updated Chinese localization (Thanks [@AlphaStarguide](https://github.com/AlphaStarguide)!)
