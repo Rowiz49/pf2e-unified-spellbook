@@ -183,7 +183,7 @@ function getSlotInfo(
   rankSpells,
   actor,
 ) {
-  const isStaff = !!entry.staff;
+  const isStaff = entry.activationType == "staves" || !!entry.staff;
 
   if (isStaff) {
     return getStaffData(actor, entry);

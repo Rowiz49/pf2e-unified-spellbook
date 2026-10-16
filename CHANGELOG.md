@@ -1,3 +1,7 @@
+# 2.5.4
+
+- Update staff resolution to pf2e-dailies version 4.23.0
+
 # 2.5.3
 
 - Fix an issue where all spells in a flexible spellcasting entry were being shown.
