@@ -1,3 +1,7 @@
+# 2.6.0
+
+- Add support for pf2e-dailies spell servers
+
 # 2.5.5
 
 - Update staff resolution to pf2e-dailies version 4.23.0

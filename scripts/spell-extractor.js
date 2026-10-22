@@ -1,6 +1,6 @@
 import { getParentItem } from "./utils.js";
 import { injectSignatureVirtuals } from "./signature-spells.js";
-import { getStaffData } from "./pf2e-dailies/staves.js";
+import { getStaffAndServerData } from "./pf2e-dailies/staves.js";
 import { isPrimaryAnimistVesselSpell } from "./pf2e-dailies/animist.js";
 import { buildBaseViewModel } from "./spell-view-model.js";
 // ---------------------------------------------------------------------------
@@ -183,10 +183,10 @@ function getSlotInfo(
   rankSpells,
   actor,
 ) {
-  const isStaff = entry.activationType == "staves" || !!entry.staff;
+  const isStaffOrServer = entry.activationType == "staves" || entry.activationType == "servers" ||!!entry.staff;
 
-  if (isStaff) {
-    return getStaffData(actor, entry);
+  if (isStaffOrServer) {
+    return getStaffAndServerData(actor, entry);
   }
 
   if (!isRegularEntry) {

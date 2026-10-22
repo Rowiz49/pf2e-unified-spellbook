@@ -2,20 +2,32 @@ import { getDailies } from "../utils.js";
 
 /**
  * Builds staff entry data from pf2e dailies
+ * Also looks for servers in the dailies data, as they are treated the same way as staves
+ * but stored in a differently named array.
  * @param {Actor} actor
  * @param {Item} entry
  * @returns The staff type and it's corresponding charges
  */
-export function getStaffData(actor, entry) {
+export function getStaffAndServerData(actor, entry) {
   const rawStaves = getDailies(actor)?.staves;
+  // We do this because the dailies data can be stored as either an array or a single object,
+  // and we want to ensure that we always have an array to work with.
   const stavesArray = Array.isArray(rawStaves)
     ? rawStaves
     : rawStaves
       ? [rawStaves]
       : [];
+
+  const rawServers = getDailies(actor)?.servers;
+  const serversArray = Array.isArray(rawServers)
+    ? rawServers
+    : rawServers
+      ? [rawServers]
+      : [];
+  const stavesAndServersArray = [...stavesArray, ...serversArray];
   const staffId =
-    entry.staff?._id ?? entry.staff?.id ?? entry.id?.replace(/-casting$/, "");
-  const staffData = stavesArray.find((s) => s.staffId === staffId);
+    entry.id?.replace(/-casting$/, "") ?? entry.staff?._id ?? entry.staff?.id; //entry.staff is a legacy option of dailies
+  const staffData = stavesAndServersArray.find((s) => s.staffId === staffId);
   const charges = staffData?.charges ?? { value: 0, max: 0 };
   return { type: "staff", current: charges.value, max: charges.max };
 }
