@@ -201,7 +201,7 @@ function getSlotInfo(
   const prepType = entry.system.prepared.value;
   const isFlexible = entry.system.prepared.flexible;
 
-  if ((prepType === "spontaneous" || isFlexible) && slot) {
+  if ((prepType === "spontaneous" || (isFlexible && rankKey !== "cantrips")) && slot) {
     return {
       type: "spontaneous",
       current: slot.value,
@@ -296,7 +296,7 @@ function buildSpellViewModels(slotInfo, rankSpells, entryKey, rankKey, actor) {
       isFlexible: slotInfo.isFlexible ?? false,
       ...overrides,
     });
-
+  console.debug(slotInfo)
   if (slotInfo.type === "prepared") {
     return slotInfo.slots
       .filter((s) => s.spellId)
@@ -332,12 +332,13 @@ function buildSpellViewModels(slotInfo, rankSpells, entryKey, rankKey, actor) {
 
   // If this is a flexible prepared entry, filter the spells based on the signature flag
   // of the slot, since the signature flag indicates whether a spell has been prepared.
+  if (slotInfo.isFlexible){
+    console.debug(rankSpells);
+  }
   if (slotInfo.isFlexible && rankKey !== "cantrips") {
-    console.log(rankSpells, entryKey);
     rankSpells = rankSpells.filter((spell) => {
       return spell.system.location.signature;
     });
-    console.log(rankSpells, entryKey);
   }
 
   return rankSpells.map((spell) =>
