@@ -1,3 +1,7 @@
+# 2.6.1
+
+- Fixed all known cantrips appearing as prepared for flexible entries
+
 # 2.6.0
 
 - Add support for pf2e-dailies spell servers
